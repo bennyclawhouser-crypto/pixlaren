@@ -485,7 +485,13 @@
       </div>
     </div>
 
-    <button id="start-btn" class="start-btn" onclick="startGame()">STARTA</button>
+    <!-- Name + Start row -->
+    <div style="display:flex;align-items:center;gap:10px;width:100%;max-width:340px;">
+      <input id="player-name-input" type="text" maxlength="14" placeholder="Ditt namn"
+        style="flex:1;background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.25);border-radius:10px;padding:14px 14px;color:white;font-size:16px;font-family:Arial,sans-serif;outline:none;text-align:center;"
+        onkeydown="if(event.key==='Enter') startGame()" />
+      <button id="start-btn" class="start-btn" onclick="startGame()" style="white-space:nowrap;flex-shrink:0;">STARTA</button>
+    </div>
     <p class="instructions">Bilden avslöjas steg för steg. Ju färre försök — desto fler poäng!</p>
   </div>
 </div>
@@ -895,9 +901,10 @@ function updateDiffLabel(v) {
 }
 
 function startGame() {
-  // Pick up name from in-game field if already set, else default
+  const nameInput = document.getElementById('player-name-input');
+  if (nameInput?.value.trim()) playerName = nameInput.value.trim();
   const ingame = document.getElementById('ingame-name');
-  if (ingame?.value.trim()) playerName = ingame.value.trim();
+  if (ingame) ingame.value = playerName;
   roundNumber = 0;
   sessionScore = 0;
   const diff = parseInt(document.getElementById('difficulty-slider')?.value || '5');
