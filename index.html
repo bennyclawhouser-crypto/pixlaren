@@ -152,6 +152,69 @@
       letter-spacing: 1px;
     }
 
+    /* Optical illusion ring around image */
+    @keyframes spinRing {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+    @keyframes spinRingRev {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(-360deg); }
+    }
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50%       { opacity: 1;   transform: scale(1.04); }
+    }
+
+    .img-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 380px;
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Outer spinning conic ring */
+    .illusion-ring-outer {
+      position: absolute;
+      inset: -14px;
+      border-radius: 50%;
+      background: conic-gradient(
+        #C8102E 0deg, #ffffff 30deg, #C8102E 60deg, #000 90deg,
+        #C8102E 120deg, #ffffff 150deg, #C8102E 180deg, #000 210deg,
+        #C8102E 240deg, #ffffff 270deg, #C8102E 300deg, #000 330deg, #C8102E 360deg
+      );
+      animation: spinRing 4s linear infinite;
+      mask: radial-gradient(circle, transparent 84%, black 85%);
+      -webkit-mask: radial-gradient(circle, transparent 84%, black 85%);
+    }
+
+    /* Inner counter-spinning ring */
+    .illusion-ring-inner {
+      position: absolute;
+      inset: -7px;
+      border-radius: 50%;
+      background: conic-gradient(
+        #005B9E 0deg, #C8E64C 45deg, #005B9E 90deg, #C8E64C 135deg,
+        #005B9E 180deg, #C8E64C 225deg, #005B9E 270deg, #C8E64C 315deg, #005B9E 360deg
+      );
+      animation: spinRingRev 2.5s linear infinite;
+      mask: radial-gradient(circle, transparent 88%, black 89%);
+      -webkit-mask: radial-gradient(circle, transparent 88%, black 89%);
+    }
+
+    /* Pulsing glow */
+    .illusion-glow {
+      position: absolute;
+      inset: -4px;
+      border-radius: 20px;
+      background: transparent;
+      box-shadow: 0 0 24px 8px rgba(200,16,46,0.5), 0 0 48px 16px rgba(0,91,158,0.3);
+      animation: pulseGlow 2s ease-in-out infinite;
+    }
+
     /* Image container */
     .img-container {
       position: relative;
@@ -160,8 +223,8 @@
       aspect-ratio: 1;
       border-radius: 16px;
       overflow: hidden;
-      border: 2px solid rgba(255,255,255,0.1);
       background: #1a1a2e;
+      z-index: 1;
     }
 
     .player-img {
@@ -357,9 +420,14 @@
     <button onclick="goHome()" style="background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(255,255,255,0.7);font-family:'Arial Black',sans-serif;font-size:11px;letter-spacing:1px;padding:6px 12px;cursor:pointer;">HEM</button>
   </div>
 
-  <div class="img-container">
-    <img id="player-img" class="player-img" src="" alt="Fotbollsspelare" crossorigin="anonymous" />
-    <canvas id="pixel-canvas" class="pixel-overlay"></canvas>
+  <div class="img-wrapper">
+    <div class="illusion-ring-outer"></div>
+    <div class="illusion-ring-inner"></div>
+    <div class="illusion-glow"></div>
+    <div class="img-container">
+      <img id="player-img" class="player-img" src="" alt="Fotbollsspelare" />
+      <canvas id="pixel-canvas" class="pixel-overlay"></canvas>
+    </div>
   </div>
 
   <div class="hint-wrap">
