@@ -474,9 +474,17 @@ let currentPlayer = null;
 let currentAttempt = 0;
 let gameOver = false;
 let imgLoaded = false;
+let recentPlayers = []; // track last played to avoid repeats
 
 function pickPlayer() {
-  return PLAYERS[Math.floor(Math.random() * PLAYERS.length)];
+  // Filter out the last min(3, total-1) played players
+  const maxRecent = Math.min(3, PLAYERS.length - 1);
+  const available = PLAYERS.filter(p => !recentPlayers.slice(-maxRecent).includes(p.name));
+  const pool = available.length > 0 ? available : PLAYERS;
+  const picked = pool[Math.floor(Math.random() * pool.length)];
+  recentPlayers.push(picked.name);
+  if (recentPlayers.length > maxRecent + 1) recentPlayers.shift();
+  return picked;
 }
 
 const DIFF_LABELS = {1:'1 — SUPERLÄTT',2:'2 — LÄTT',3:'3 — LÄTT',4:'4 — MEDEL',5:'5 — MEDEL',6:'6 — MEDEL',7:'7 — SVÅR',8:'8 — SVÅR',9:'9 — EXPERT',10:'10 — OMÖJLIGT'};
