@@ -752,8 +752,9 @@ function revealMore() {
 
   document.getElementById('attempt-badge').textContent = `FÖRSÖK ${currentAttempt}`;
 
-  const nextPixelIdx = Math.min(currentAttempt, PIXEL_SIZES.length - 1);
-  const pixelSize = PIXEL_SIZES[nextPixelIdx];
+  // Always 5 attempts: attempt 1-5 map to PIXEL_SIZES[0-4], after 5th we show fully revealed
+  const pixelIdx = Math.min(currentAttempt, PIXEL_SIZES.length - 2); // stop at second-to-last (not full reveal yet)
+  const pixelSize = PIXEL_SIZES[pixelIdx];
 
   if (imgLoaded || document.getElementById('player-img').complete) {
     applyPixelation(pixelSize);
@@ -768,13 +769,15 @@ function revealMore() {
   }
 
   const nextAttempt = currentAttempt + 1;
+  const MAX_ATTEMPTS = 5;
   const btn = document.getElementById('attempt-btn');
 
-  if (currentAttempt >= PIXEL_SIZES.length - 1) {
-    btn.textContent = `VISA SVAR`;
+  if (currentAttempt >= MAX_ATTEMPTS) {
+    btn.textContent = 'VISA SVAR';
     btn.onclick = revealAnswer;
   } else {
     btn.textContent = `FÖRSÖK (${nextAttempt})`;
+    btn.onclick = revealMore;
   }
 }
 
