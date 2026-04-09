@@ -329,6 +329,21 @@
       <svg width="20" height="20" viewBox="0 0 200 200"><path d="M100 10 L180 50 L180 130 C180 165 140 185 100 195 C60 185 20 165 20 130 L20 50 Z" fill="#C8102E"/><text x="100" y="125" text-anchor="middle" font-family="Arial Black" font-size="60" fill="white">D</text></svg>
       <span>DJURGÅRDENS IF EDITION</span>
     </div>
+    <!-- Difficulty slider -->
+    <div style="width:100%;max-width:320px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-family:Arial,sans-serif;font-size:12px;letter-spacing:2px;color:rgba(255,255,255,0.6);text-transform:uppercase;">Svårighetsgrad</span>
+        <span id="diff-label" style="font-family:'Arial Black',sans-serif;font-size:18px;color:var(--gold);letter-spacing:1px;">5 — MEDEL</span>
+      </div>
+      <input type="range" id="difficulty-slider" min="1" max="10" value="5"
+        oninput="updateDiffLabel(this.value)"
+        style="width:100%;accent-color:var(--red);height:6px;cursor:pointer;" />
+      <div style="display:flex;justify-content:space-between;margin-top:4px;">
+        <span style="font-family:Arial,sans-serif;font-size:10px;color:rgba(255,255,255,0.35);letter-spacing:1px;">LÄTT</span>
+        <span style="font-family:Arial,sans-serif;font-size:10px;color:rgba(255,255,255,0.35);letter-spacing:1px;">SVÅR</span>
+      </div>
+    </div>
+
     <button class="start-btn" onclick="startGame()">STARTA</button>
     <p class="instructions">Bilden avslöjas steg för steg. Ju färre försök — desto fler poäng!</p>
   </div>
@@ -433,7 +448,21 @@ const PLAYERS = [
 ];
 
 // Pixel sizes: from very blocky to clear
-const PIXEL_SIZES = [48, 36, 24, 16, 10, 6, 3, 1];
+// Pixel sizes per difficulty (1=lätt, 10=svår)
+// Lätt = fler steg, snabbt avslöjad. Svår = färre steg, stannar mer pixlad.
+function getPixelSizes(difficulty) {
+  // difficulty 1-10: 1=very easy (many reveal steps), 10=very hard (few steps, stays blurry longer)
+  const allSizes = [80, 60, 48, 36, 28, 20, 14, 10, 6, 3, 1];
+  // Easy (1): start at index 2, many steps → quick reveal
+  // Hard (10): start at index 0 (very blurry), fewer steps → slow reveal
+  const startBlur = Math.floor((difficulty / 10) * 5);       // 0-5
+  const stepsCount = Math.max(3, 11 - Math.floor(difficulty / 10 * 5)); // 6-11 steps
+  const sizes = allSizes.slice(startBlur, startBlur + stepsCount);
+  if (!sizes.includes(1)) sizes.push(1); // always end fully revealed
+  return sizes;
+}
+
+let PIXEL_SIZES = getPixelSizes(5);
 const MAX_HINTS = 3;
 
 let currentPlayer = null;
@@ -445,7 +474,14 @@ function pickPlayer() {
   return PLAYERS[Math.floor(Math.random() * PLAYERS.length)];
 }
 
+const DIFF_LABELS = {1:'1 — SUPERLÄTT',2:'2 — LÄTT',3:'3 — LÄTT',4:'4 — MEDEL',5:'5 — MEDEL',6:'6 — MEDEL',7:'7 — SVÅR',8:'8 — SVÅR',9:'9 — EXPERT',10:'10 — OMÖJLIGT'};
+function updateDiffLabel(v) {
+  document.getElementById('diff-label').textContent = DIFF_LABELS[v] || v;
+}
+
 function startGame() {
+  const diff = parseInt(document.getElementById('difficulty-slider')?.value || '5');
+  PIXEL_SIZES = getPixelSizes(diff);
   document.getElementById('start-screen').style.display = 'none';
   const gs = document.getElementById('game-screen');
   gs.style.display = 'flex';
