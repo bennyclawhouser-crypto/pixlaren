@@ -434,7 +434,7 @@
     <div class="hint-text" id="hint-text" style="display:none"></div>
   </div>
 
-  <button class="attempt-btn" id="attempt-btn" onclick="revealMore()">
+  <button class="attempt-btn" id="attempt-btn">
     FÖRSÖK (1)
   </button>
 
@@ -753,7 +753,7 @@ function resetGame(showStart = true) {
   const btn = document.getElementById('attempt-btn');
   btn.textContent = 'FÖRSÖK (1)';
   btn.disabled = false;
-  btn.onclick = revealMore;
+  btn.dataset.mode = 'attempt';
   document.getElementById('guess-input').value = '';
   document.getElementById('hint-text').style.display = 'none';
 
@@ -844,10 +844,10 @@ function revealMore() {
 
   if (currentAttempt >= MAX_ATTEMPTS) {
     btn.textContent = 'VISA SVAR';
-    btn.onclick = revealAnswer;
+    btn.dataset.mode = 'reveal';
   } else {
     btn.textContent = `FÖRSÖK (${nextAttempt})`;
-    btn.onclick = revealMore;
+    btn.dataset.mode = 'attempt';
   }
 }
 
@@ -905,6 +905,15 @@ function showResult(won, score) {
 
   overlay.classList.add('show');
 }
+
+// Single event listener for attempt button — checks mode each click
+document.getElementById('attempt-btn').addEventListener('click', function() {
+  if (this.dataset.mode === 'reveal') {
+    revealAnswer();
+  } else {
+    revealMore();
+  }
+});
 
 // Allow Enter key for guessing
 document.getElementById('guess-input').addEventListener('keydown', e => {
