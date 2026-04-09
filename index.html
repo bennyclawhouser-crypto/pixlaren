@@ -813,7 +813,14 @@ function loadHighscores() {
 }
 function saveHighscore(name, score, attempts) {
   const scores = loadHighscores();
-  scores.push({ name, score, attempts });
+  // Find existing entry with same name (case-insensitive)
+  const existing = scores.find(s => s.name.toLowerCase() === name.toLowerCase());
+  if (existing) {
+    existing.score += score;
+    existing.games = (existing.games || 1) + 1;
+  } else {
+    scores.push({ name, score, games: 1 });
+  }
   scores.sort((a, b) => b.score - a.score);
   const top10 = scores.slice(0, 10);
   localStorage.setItem(HS_KEY, JSON.stringify(top10));
