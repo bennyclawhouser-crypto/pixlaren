@@ -227,6 +227,83 @@
       z-index: 1;
     }
 
+    /* Game layout row: image + highscore side by side */
+    .game-row {
+      width: 100%;
+      max-width: 560px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .game-row .img-wrapper {
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* Highscore panel */
+    .highscore-panel {
+      width: 130px;
+      flex-shrink: 0;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 12px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .hs-title {
+      font-family: 'Arial Black', sans-serif;
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: var(--gold);
+      text-align: center;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+    .hs-entry {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 4px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .hs-entry:last-child { border-bottom: none; }
+    .hs-rank {
+      font-family: 'Arial Black', sans-serif;
+      font-size: 10px;
+      color: var(--muted, #666);
+      width: 14px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .hs-rank.gold   { color: #FFD700; }
+    .hs-rank.silver { color: #C0C0C0; }
+    .hs-rank.bronze { color: #CD7F32; }
+    .hs-name {
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      color: rgba(255,255,255,0.85);
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .hs-score {
+      font-family: 'Arial Black', sans-serif;
+      font-size: 11px;
+      color: var(--gold);
+      flex-shrink: 0;
+    }
+    .hs-empty {
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      color: rgba(255,255,255,0.25);
+      text-align: center;
+      padding: 8px 0;
+      font-style: italic;
+    }
+
     .player-img {
       width: 100%;
       height: 100%;
@@ -420,13 +497,21 @@
     <button onclick="goHome()" style="background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(255,255,255,0.7);font-family:'Arial Black',sans-serif;font-size:11px;letter-spacing:1px;padding:6px 12px;cursor:pointer;">HEM</button>
   </div>
 
-  <div class="img-wrapper">
-    <div class="illusion-ring-outer"></div>
-    <div class="illusion-ring-inner"></div>
-    <div class="illusion-glow"></div>
-    <div class="img-container">
-      <img id="player-img" class="player-img" src="" alt="Fotbollsspelare" />
-      <canvas id="pixel-canvas" class="pixel-overlay"></canvas>
+  <div class="game-row">
+    <div class="img-wrapper">
+      <div class="illusion-ring-outer"></div>
+      <div class="illusion-ring-inner"></div>
+      <div class="illusion-glow"></div>
+      <div class="img-container">
+        <img id="player-img" class="player-img" src="" alt="Fotbollsspelare" />
+        <canvas id="pixel-canvas" class="pixel-overlay"></canvas>
+      </div>
+    </div>
+
+    <!-- Highscore panel -->
+    <div class="highscore-panel">
+      <div class="hs-title">🏆 TOPP 10</div>
+      <div id="hs-list"><div class="hs-empty">Inga poäng än</div></div>
     </div>
   </div>
 
@@ -708,7 +793,38 @@ let currentPlayer = null;
 let currentAttempt = 0;
 let gameOver = false;
 let imgLoaded = false;
-let recentPlayers = []; // track last played to avoid repeats
+let recentPlayers = [];
+
+// ── Highscore ──────────────────────────────────────────────────────────────
+const HS_KEY = 'pixlaren_highscores';
+function loadHighscores() {
+  try { return JSON.parse(localStorage.getItem(HS_KEY)) || []; } catch { return []; }
+}
+function saveHighscore(name, score, attempts) {
+  const scores = loadHighscores();
+  scores.push({ name, score, attempts });
+  scores.sort((a, b) => b.score - a.score);
+  const top10 = scores.slice(0, 10);
+  localStorage.setItem(HS_KEY, JSON.stringify(top10));
+  renderHighscores();
+}
+function renderHighscores() {
+  const scores = loadHighscores();
+  const list = document.getElementById('hs-list');
+  if (!list) return;
+  if (scores.length === 0) {
+    list.innerHTML = '<div class="hs-empty">Inga poäng än</div>';
+    return;
+  }
+  const rankClass = i => i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+  const rankIcon  = i => i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i+1}.`;
+  list.innerHTML = scores.map((s, i) => `
+    <div class="hs-entry">
+      <span class="hs-rank ${rankClass(i)}">${rankIcon(i)}</span>
+      <span class="hs-name" title="${s.name}">${s.name.split(' ')[0]}</span>
+      <span class="hs-score">${s.score}</span>
+    </div>`).join('');
+}
 
 function pickPlayer() {
   // Filter out the last min(3, total-1) played players
@@ -864,8 +980,8 @@ function checkGuess() {
   if (isCorrect) {
     gameOver = true;
     const score = Math.max(10 - currentAttempt * 2, 1);
-    // Reveal fully
     applyPixelation(1);
+    saveHighscore(currentPlayer.name, score, currentAttempt + 1);
     showResult(true, score);
   } else {
     input.classList.add('wrong-flash');
@@ -905,6 +1021,9 @@ function showResult(won, score) {
 
   overlay.classList.add('show');
 }
+
+// Init highscores on load
+renderHighscores();
 
 // Single event listener for attempt button — checks mode each click
 document.getElementById('attempt-btn').addEventListener('click', function() {
