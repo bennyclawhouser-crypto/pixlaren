@@ -982,15 +982,36 @@ function revealMore() {
   }
 }
 
+// Levenshtein distance — counts edit distance between two strings
+function levenshtein(a, b) {
+  const m = a.length, n = b.length;
+  const dp = Array.from({length: m+1}, (_, i) => Array.from({length: n+1}, (_, j) => i === 0 ? j : j === 0 ? i : 0));
+  for (let i = 1; i <= m; i++)
+    for (let j = 1; j <= n; j++)
+      dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1] : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+  return dp[m][n];
+}
+
+function isCloseEnough(guess, target) {
+  // Allow 1 typo for names up to 6 chars, 2 typos for longer
+  const maxDist = target.length <= 6 ? 1 : 2;
+  return levenshtein(guess, target) <= maxDist;
+}
+
 function checkGuess() {
   const input = document.getElementById('guess-input');
-  const guess = input.value.trim().toLowerCase();
+  const guess = input.value.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   if (!guess) return;
 
-  const correct = currentPlayer.name.toLowerCase();
-  const alternatives = currentPlayer.alternativeNames || [];
-  const isCorrect = guess === correct || alternatives.includes(guess) ||
-    correct.includes(guess) && guess.length > 3;
+  const correct = currentPlayer.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const alternatives = (currentPlayer.alternativeNames || []).map(a => a.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''));
+
+  // Check exact, alternative names, partial match, or fuzzy (1-2 typos)
+  const correctParts = correct.split(' ');
+  const isCorrect = guess === correct
+    || alternatives.some(a => guess === a || isCloseEnough(guess, a))
+    || correctParts.some(part => part.length > 3 && (guess === part || isCloseEnough(guess, part)))
+    || isCloseEnough(guess, correct);
 
   if (isCorrect) {
     gameOver = true;
