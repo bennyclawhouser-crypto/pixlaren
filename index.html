@@ -379,51 +379,56 @@ const PLAYERS = [
   {
     name: "Zlatan Ibrahimović",
     hints: ["Spelade i Malmö FF som ung", "Känd för akrobatiska mål", "En av Sveriges mest kända spelare"],
-    imageUrl: "https://cdn.sportmonks.com/images/soccer/players/5/901.png",
-    imageUrlFallback: "https://img.a.transfermarkt.technology/portrait/big/7497-1631608586.jpg?lm=1",
+    imageUrl: "images/zlatan.jpg",
     alternativeNames: ["zlatan", "ibrahimovic", "ibrahimović"],
   },
   {
     name: "Lionel Messi",
-    hints: ["Argentinsk wizard", "Vann Ballon d'Or fler gånger än någon annan", "Spelade för FC Barcelona i 20 år"],
-    imageUrl: "https://cdn.sportmonks.com/images/soccer/players/10/3509610.png",
-    imageUrlFallback: "https://img.a.transfermarkt.technology/portrait/big/28003-1682683695.jpg?lm=1",
+    hints: ["Argentinsk trollkarl med bollen", "Vann Ballon d'Or fler gånger än någon annan", "Spelade för FC Barcelona i 20 år"],
+    imageUrl: "images/messi.jpg",
     alternativeNames: ["messi", "leo", "leo messi"],
   },
   {
     name: "Cristiano Ronaldo",
     hints: ["Portugisisk forward", "Känd för sin extrema träning och CR7-varumärket", "Spelade för Man Utd, Real Madrid och Juventus"],
-    imageUrl: "https://cdn.sportmonks.com/images/soccer/players/7/3607.png",
-    imageUrlFallback: "https://img.a.transfermarkt.technology/portrait/big/8198-1675594441.jpg?lm=1",
+    imageUrl: "images/ronaldo.jpg",
     alternativeNames: ["ronaldo", "cr7", "cristiano"],
   },
   {
     name: "Kylian Mbappé",
-    hints: ["Fransk superstjärna", "VM-vinnare 2018 som 19-åring", "Kallas 'Donatello' av fans"],
-    imageUrl: "https://cdn.sportmonks.com/images/soccer/players/14/177614.png",
-    imageUrlFallback: "https://img.a.transfermarkt.technology/portrait/big/342229-1698247381.jpg?lm=1",
+    hints: ["Fransk superstjärna", "VM-vinnare 2018 som 19-åring", "Spelade för PSG innan Real Madrid"],
+    imageUrl: "images/mbappe.jpg",
     alternativeNames: ["mbappe", "mbappé", "kylian"],
   },
   {
     name: "Erling Haaland",
     hints: ["Norsk målmaskin", "Pappan spelade också professionell fotboll", "Slog Premier League-rekord med 36 mål på en säsong"],
-    imageUrl: "https://cdn.sportmonks.com/images/soccer/players/8/965080.png",
-    imageUrlFallback: "https://img.a.transfermarkt.technology/portrait/big/418560-1691080074.jpg?lm=1",
+    imageUrl: "images/haaland.jpg",
     alternativeNames: ["haaland", "erling"],
   },
   {
     name: "Ronaldinho",
     hints: ["Brasiliansk legend med ett smittande leende", "Ballon d'Or 2005", "Spelade för Barcelona och AC Milan"],
-    imageUrl: "https://cdn.sportmonks.com/images/soccer/players/6/3526.png",
-    imageUrlFallback: "https://img.a.transfermarkt.technology/portrait/big/3759-1448225714.jpg?lm=1",
+    imageUrl: "images/ronaldinho.jpg",
     alternativeNames: ["ronaldinho"],
   },
   {
     name: "Neymar",
-    hints: ["Brasiliansk stjärna känd för sina driblingar", "Spelade för Barcelona och PSG", "Världens dyraste transfer när han bytte klubb 2017"],
-    imageUrl: "https://cdn.sportmonks.com/images/soccer/players/16/3528016.png",
-    imageUrlFallback: "https://img.a.transfermarkt.technology/portrait/big/68290-1693225790.jpg?lm=1",
+    hints: ["Brasiliansk stjärna känd för sina driblingar", "Spelade för Barcelona och PSG", "Världens dyraste transfer 2017"],
+    imageUrl: "images/neymar.jpg",
     alternativeNames: ["neymar", "neymar jr"],
+  },
+  {
+    name: "Robert Lewandowski",
+    hints: ["Polsk anfallare", "Spelade för Bayern München", "Nära att vinna Ballon d'Or 2020"],
+    imageUrl: "images/lewandowski.jpg",
+    alternativeNames: ["lewandowski", "lewy", "robert lewandowski"],
+  },
+  {
+    name: "Thierry Henry",
+    hints: ["Fransk legend", "Arsenal-ikonen", "VM-vinnare 1998 och EM-vinnare 2000"],
+    imageUrl: "images/henry.jpg",
+    alternativeNames: ["henry", "thierry", "thierry henry"],
   },
 ];
 
@@ -464,18 +469,11 @@ function resetGame(showStart = true) {
   currentPlayer = pickPlayer();
 
   const img = document.getElementById('player-img');
-  let triedFallback = false;
-
   img.onload = () => {
     imgLoaded = true;
     applyPixelation(PIXEL_SIZES[0]);
   };
   img.onerror = () => {
-    if (!triedFallback && currentPlayer.imageUrlFallback) {
-      triedFallback = true;
-      img.src = currentPlayer.imageUrlFallback;
-      return;
-    }
     // All failed — draw avatar placeholder with first letter
     imgLoaded = false;
     const canvas = document.getElementById('pixel-canvas');
@@ -495,7 +493,6 @@ function resetGame(showStart = true) {
     ctx.fillStyle = 'rgba(200,16,46,0.3)';
     ctx.fillRect(0, 0, W, H);
   };
-  img.crossOrigin = 'anonymous';
   img.src = currentPlayer.imageUrl;
   applyPixelation(PIXEL_SIZES[0]);
 }
