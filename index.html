@@ -750,8 +750,10 @@ function resetGame(showStart = true) {
   gameOver = false;
   imgLoaded = false;
   document.getElementById('attempt-badge').textContent = 'FÖRSÖK 0';
-  document.getElementById('attempt-btn').textContent = 'FÖRSÖK (1)';
-  document.getElementById('attempt-btn').disabled = false;
+  const btn = document.getElementById('attempt-btn');
+  btn.textContent = 'FÖRSÖK (1)';
+  btn.disabled = false;
+  btn.onclick = revealMore;
   document.getElementById('guess-input').value = '';
   document.getElementById('hint-text').style.display = 'none';
 
