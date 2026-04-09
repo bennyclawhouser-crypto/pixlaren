@@ -354,6 +354,7 @@
   <div class="game-header">
     <div class="title">PIXLAREN</div>
     <div class="attempt-badge" id="attempt-badge">FÖRSÖK 0</div>
+    <button onclick="goHome()" style="background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(255,255,255,0.7);font-family:'Arial Black',sans-serif;font-size:11px;letter-spacing:1px;padding:6px 12px;cursor:pointer;">HEM</button>
   </div>
 
   <div class="img-container">
@@ -551,6 +552,12 @@ function pickPlayer() {
   recentPlayers.push(picked.name);
   if (recentPlayers.length > maxRecent + 1) recentPlayers.shift();
   return picked;
+}
+
+function goHome() {
+  document.getElementById('game-screen').style.display = 'none';
+  document.getElementById('result-overlay').classList.remove('show');
+  document.getElementById('start-screen').style.display = 'flex';
 }
 
 const DIFF_LABELS = {1:'1 — SUPERLÄTT',2:'2 — LÄTT',3:'3 — LÄTT',4:'4 — MEDEL',5:'5 — MEDEL',6:'6 — MEDEL',7:'7 — SVÅR',8:'8 — SVÅR',9:'9 — EXPERT',10:'10 — OMÖJLIGT'};
