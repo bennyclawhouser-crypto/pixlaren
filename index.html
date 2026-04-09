@@ -485,16 +485,7 @@
       </div>
     </div>
 
-    <!-- Player name input -->
-    <div style="width:100%;max-width:320px;">
-      <div style="font-family:Arial,sans-serif;font-size:11px;letter-spacing:2px;color:rgba(255,255,255,0.6);text-transform:uppercase;margin-bottom:8px;">Ditt namn</div>
-      <input id="player-name-input" type="text" maxlength="20" placeholder="Skriv ditt namn här..."
-        style="width:100%;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.2);border-radius:10px;padding:12px 16px;color:white;font-size:16px;font-family:Arial,sans-serif;outline:none;text-align:center;"
-        oninput="document.getElementById('start-btn').disabled = this.value.trim().length < 1"
-        onkeydown="if(event.key==='Enter' && this.value.trim()) startGame()" />
-    </div>
-
-    <button id="start-btn" class="start-btn" onclick="startGame()" disabled style="opacity:0.5;">STARTA</button>
+    <button id="start-btn" class="start-btn" onclick="startGame()">STARTA</button>
     <p class="instructions">Bilden avslöjas steg för steg. Ju färre försök — desto fler poäng!</p>
   </div>
 </div>
@@ -520,7 +511,15 @@
 
     <!-- Highscore panel -->
     <div class="highscore-panel">
-      <div class="hs-title">🏆 TOPP 10</div>
+      <!-- Name input -->
+      <div style="margin-bottom:10px;">
+        <div style="font-size:8px;letter-spacing:1.5px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:4px;">Spelare</div>
+        <input id="ingame-name" type="text" maxlength="12" placeholder="Ditt namn"
+          value=""
+          style="width:100%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:6px 8px;color:white;font-size:12px;font-family:Arial,sans-serif;outline:none;text-align:center;"
+          oninput="playerName = this.value.trim() || 'Anonym'" />
+      </div>
+      <div class="hs-title" style="margin-bottom:6px;">🏆 TOPP 10</div>
       <div id="hs-list"><div class="hs-empty">Inga poäng än</div></div>
     </div>
   </div>
@@ -896,16 +895,17 @@ function updateDiffLabel(v) {
 }
 
 function startGame() {
-  const nameInput = document.getElementById('player-name-input');
-  const name = nameInput?.value.trim();
-  if (!name) return;
-  playerName = name;
+  // Pick up name from in-game field if already set, else default
+  const ingame = document.getElementById('ingame-name');
+  if (ingame?.value.trim()) playerName = ingame.value.trim();
   roundNumber = 0;
   sessionScore = 0;
   const diff = parseInt(document.getElementById('difficulty-slider')?.value || '5');
   PIXEL_SIZES = getPixelSizes(diff);
   document.getElementById('start-screen').style.display = 'none';
   document.getElementById('game-screen').style.display = 'flex';
+  const ingame = document.getElementById('ingame-name');
+  if (ingame) ingame.value = playerName === 'Anonym' ? '' : playerName;
   resetGame(false);
 }
 
