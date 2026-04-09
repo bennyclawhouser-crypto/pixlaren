@@ -805,6 +805,9 @@ let gameOver = false;
 let imgLoaded = false;
 let recentPlayers = [];
 let playerName = 'Anonym';
+let roundNumber = 0;
+const MAX_ROUNDS = 10;
+let sessionScore = 0;
 
 // ── Highscore ──────────────────────────────────────────────────────────────
 const HS_KEY = 'pixlaren_highscores';
@@ -855,6 +858,32 @@ function pickPlayer() {
   return picked;
 }
 
+function showSessionEnd() {
+  document.getElementById('result-overlay').classList.remove('show');
+  document.getElementById('game-screen').style.display = 'none';
+
+  // Build session-end screen
+  let endScreen = document.getElementById('session-end');
+  if (!endScreen) {
+    endScreen = document.createElement('div');
+    endScreen.id = 'session-end';
+    endScreen.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:150;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;text-align:center;font-family:Arial Black,sans-serif;';
+    document.body.appendChild(endScreen);
+  }
+  endScreen.innerHTML = `
+    <div style="font-size:64px;">🎉</div>
+    <div style="font-size:clamp(22px,6vw,36px);letter-spacing:2px;color:white;">SPELET SLUT!</div>
+    <div style="font-size:18px;color:rgba(255,255,255,0.7);font-family:Arial,sans-serif;">${playerName}</div>
+    <div style="font-size:clamp(40px,10vw,72px);font-weight:900;color:#F5C518;letter-spacing:2px;">${sessionScore}</div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.5);letter-spacing:1px;">TOTALPOÄNG PÅ 10 BILDER</div>
+    <button onclick="document.getElementById('session-end').style.display='none';document.getElementById('start-screen').style.display='flex';"
+      style="margin-top:12px;background:#C8102E;color:white;border:none;border-radius:10px;padding:16px 40px;font-family:Arial Black,sans-serif;font-size:18px;letter-spacing:2px;cursor:pointer;">
+      SPELA IGEN
+    </button>
+  `;
+  endScreen.style.display = 'flex';
+}
+
 function goHome() {
   document.getElementById('game-screen').style.display = 'none';
   document.getElementById('result-overlay').classList.remove('show');
@@ -871,23 +900,29 @@ function startGame() {
   const name = nameInput?.value.trim();
   if (!name) return;
   playerName = name;
+  roundNumber = 0;
+  sessionScore = 0;
   const diff = parseInt(document.getElementById('difficulty-slider')?.value || '5');
   PIXEL_SIZES = getPixelSizes(diff);
   document.getElementById('start-screen').style.display = 'none';
-  const gs = document.getElementById('game-screen');
-  gs.style.display = 'flex';
+  document.getElementById('game-screen').style.display = 'flex';
   resetGame(false);
 }
 
 function resetGame(showStart = true) {
   if (showStart) {
     document.getElementById('result-overlay').classList.remove('show');
-    document.getElementById('game-screen').style.display = 'flex';
   }
+  roundNumber++;
+  if (roundNumber > MAX_ROUNDS) {
+    showSessionEnd();
+    return;
+  }
+  // Update round counter in badge
+  document.getElementById('attempt-badge').textContent = `BILD ${roundNumber}/${MAX_ROUNDS}`;
   currentAttempt = 0;
   gameOver = false;
   imgLoaded = false;
-  document.getElementById('attempt-badge').textContent = 'FÖRSÖK 0';
   const btn = document.getElementById('attempt-btn');
   btn.textContent = 'FÖRSÖK (1)';
   btn.disabled = false;
@@ -1024,6 +1059,7 @@ function checkGuess() {
     gameOver = true;
     const score = Math.max(10 - currentAttempt * 2, 1);
     applyPixelation(1);
+    sessionScore += score;
     saveHighscore(playerName, score, currentAttempt + 1);
     showResult(true, score);
   } else {
@@ -1048,19 +1084,25 @@ function showResult(won, score) {
   const answer = document.getElementById('result-answer');
   const scoreEl = document.getElementById('result-score');
 
+  const nextLabel = roundNumber >= MAX_ROUNDS ? 'SE RESULTAT' : 'NÄSTA BILD';
+
   if (won) {
     emoji.textContent = '🏆';
     title.className = 'result-title win';
     title.textContent = 'RÄTT!';
     answer.textContent = currentPlayer.name;
-    scoreEl.textContent = `Du gissade rätt på försök ${currentAttempt + 1} · ${score} poäng`;
+    scoreEl.textContent = `Försök ${currentAttempt + 1} · +${score} poäng · Bild ${roundNumber}/${MAX_ROUNDS}`;
   } else {
     emoji.textContent = '😅';
     title.className = 'result-title lose';
     title.textContent = 'SVARET ÄR...';
     answer.textContent = currentPlayer.name;
-    scoreEl.textContent = 'Bättre lycka nästa gång!';
+    scoreEl.textContent = `Bild ${roundNumber}/${MAX_ROUNDS} · Bättre lycka nästa gång!`;
   }
+
+  // Update play-again button label
+  const playAgainBtn = document.querySelector('.play-again-btn');
+  if (playAgainBtn) playAgainBtn.textContent = nextLabel;
 
   overlay.classList.add('show');
 }
