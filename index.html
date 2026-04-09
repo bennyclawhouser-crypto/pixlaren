@@ -373,36 +373,53 @@
 <script>
 // ── Players database ──────────────────────────────────────────────────────────
 // Using Wikipedia Commons / publicly available player images
+// Bilder via allorigins proxy för att undvika CORS-problem
+function proxyImg(url) {
+  return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=400&h=400&fit=cover&output=jpg`;
+}
+
 const PLAYERS = [
   {
     name: "Zlatan Ibrahimović",
     hints: ["Spelade i Malmö FF som ung", "Känd för akrobatiska mål", "En av Sveriges mest kända spelare"],
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Zlatan_Ibrahimovic_2019_-_2.jpg/800px-Zlatan_Ibrahimovic_2019_-_2.jpg",
+    imageUrl: proxyImg("https://upload.wikimedia.org/wikipedia/commons/e/e8/Zlatan_Ibrahimovic_2019_-_2.jpg"),
     alternativeNames: ["zlatan", "ibrahimovic", "ibrahimović"],
   },
   {
-    name: "Henrik Larsson",
-    hints: ["Spelade för Celtic", "Nicknames: 'King of Kings'", "VM 1994 och 2002"],
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Henrik_Larsson.jpg/800px-Henrik_Larsson.jpg",
-    alternativeNames: ["henrik", "larsson", "henrik larsson"],
+    name: "Lionel Messi",
+    hints: ["Spelade hela sin karriär för samma klubb i La Liga", "Har vunnit Ballon d'Or flest gånger", "Argentinsk forward"],
+    imageUrl: proxyImg("https://upload.wikimedia.org/wikipedia/commons/b/b4/Lionel-Messi-Argentina-2022-FIFA-World-Cup_%28cropped%29.jpg"),
+    alternativeNames: ["messi", "leo", "leo messi"],
   },
   {
-    name: "Freddie Ljungberg",
-    hints: ["Spelade för Arsenal i Premier League", "Känd för sitt röda hår", "Deltog i VM 2002"],
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Freddie_ljungberg_2006.jpg/800px-Freddie_ljungberg_2006.jpg",
-    alternativeNames: ["freddie", "ljungberg", "freddie ljungberg"],
+    name: "Cristiano Ronaldo",
+    hints: ["Portugisisk forward", "Känd för sin extrem träningsdisciplin", "Spelade för Manchester United, Real Madrid och Juventus"],
+    imageUrl: proxyImg("https://upload.wikimedia.org/wikipedia/commons/8/8c/Cristiano_Ronaldo_2018.jpg"),
+    alternativeNames: ["ronaldo", "cr7", "cristiano"],
   },
   {
-    name: "Kim Källström",
-    hints: ["Spelade bl.a. för Lyon och Arsenal", "Svensk landslagsmittfältare", "VM 2006"],
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Kim_Källström_2012.jpg/800px-Kim_Källström_2012.jpg",
-    alternativeNames: ["kim", "källström", "kallstrom", "kim källström"],
+    name: "Kylian Mbappé",
+    hints: ["Fransk stjärna", "Spelade för Paris Saint-Germain", "VM-vinnare 2018 som tonåring"],
+    imageUrl: proxyImg("https://upload.wikimedia.org/wikipedia/commons/5/57/2019-07-17_SG_Dynamo_Dresden_v_Paris_Saint-Germain_F.C._%28friendly%29_by_Sandro_Halank–186_%28cropped%29.jpg"),
+    alternativeNames: ["mbappe", "mbappé", "kylian"],
   },
   {
-    name: "Seb Larsson",
-    hints: ["Spelade för Sunderland", "Frikaspark-specialist", "Svensk landslagsspelare"],
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Seb_Larsson_2013.jpg/800px-Seb_Larsson_2013.jpg",
-    alternativeNames: ["seb", "seb larsson", "sebastian larsson"],
+    name: "Erling Haaland",
+    hints: ["Norsk anfallare", "Spelade för Borussia Dortmund innan Premier League", "Slog rekord i Manchester City"],
+    imageUrl: proxyImg("https://upload.wikimedia.org/wikipedia/commons/3/31/Erling_Haaland_3_%28cropped%29.jpg"),
+    alternativeNames: ["haaland", "erling"],
+  },
+  {
+    name: "Neymar",
+    hints: ["Brasiliansk anfallare", "Spelade för Barcelona och PSG", "Känd för sina driblingar och frisparkar"],
+    imageUrl: proxyImg("https://upload.wikimedia.org/wikipedia/commons/b/bc/Neymar_-_Bra%C3%A9s%C3%A9s_em_campo_3_%28cropped%29.jpg"),
+    alternativeNames: ["neymar", "neymar jr"],
+  },
+  {
+    name: "Ronaldinho",
+    hints: ["Brasiliansk legend", "Känd för sitt leende och sin teknik", "Ballon d'Or 2005"],
+    imageUrl: proxyImg("https://upload.wikimedia.org/wikipedia/commons/9/9e/Ronaldinho_in_2012.jpg"),
+    alternativeNames: ["ronaldinho"],
   },
 ];
 
