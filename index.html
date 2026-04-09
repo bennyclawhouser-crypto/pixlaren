@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>PIXLAREN – Gissa fotbollsstjärnan</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red: #C8102E;
+      --red-dark: #9e0b22;
+      --blue: #005B9E;
+      --gold: #F5C518;
+      --bg: #0d1117;
+    }
+
+    html, body {
+      min-height: 100vh;
+      background: var(--bg);
+      font-family: 'Arial Black', 'Impact', sans-serif;
+      color: white;
+      overflow-x: hidden;
+      touch-action: manipulation;
+    }
+
+    /* ── START SCREEN ── */
+    #start-screen {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .djurgardenBg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at center, rgba(0,91,158,0.35) 0%, transparent 70%),
+        var(--bg);
+      z-index: 0;
+    }
+
+    /* DIF crest SVG background */
+    .crest-bg {
+      position: absolute;
+      width: 420px;
+      height: 420px;
+      opacity: 0.08;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -60%);
+      z-index: 0;
+    }
+
+    .start-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .game-title {
+      font-size: clamp(52px, 14vw, 96px);
+      letter-spacing: 8px;
+      color: white;
+      text-shadow: 0 0 40px rgba(200,16,46,0.8), 0 4px 0 rgba(0,0,0,0.5);
+      line-height: 1;
+    }
+
+    .game-subtitle {
+      font-size: clamp(13px, 3.5vw, 18px);
+      letter-spacing: 3px;
+      color: rgba(255,255,255,0.7);
+      font-family: Arial, sans-serif;
+      font-weight: normal;
+      text-transform: uppercase;
+    }
+
+    .dif-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(0,91,158,0.3);
+      border: 1px solid rgba(0,91,158,0.5);
+      padding: 8px 20px;
+      border-radius: 40px;
+    }
+    .dif-badge span {
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,0.8);
+      font-family: Arial, sans-serif;
+    }
+
+    .start-btn {
+      background: var(--red);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 22px 60px;
+      font-family: 'Arial Black', sans-serif;
+      font-size: clamp(22px, 6vw, 32px);
+      letter-spacing: 3px;
+      cursor: pointer;
+      box-shadow: 0 8px 32px rgba(200,16,46,0.6), 0 2px 0 rgba(0,0,0,0.3);
+      transition: transform 0.1s, box-shadow 0.1s;
+      margin-top: 10px;
+    }
+    .start-btn:active { transform: scale(0.96); box-shadow: 0 4px 16px rgba(200,16,46,0.5); }
+    .start-btn:hover { background: var(--red-dark); }
+
+    .instructions {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      max-width: 300px;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    /* ── GAME SCREEN ── */
+    #game-screen {
+      display: none;
+      min-height: 100vh;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 16px 32px;
+      gap: 16px;
+    }
+
+    .game-header {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .game-header .title { font-size: 18px; letter-spacing: 4px; color: rgba(255,255,255,0.5); }
+    .attempt-badge {
+      background: var(--red);
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      letter-spacing: 1px;
+    }
+
+    /* Image container */
+    .img-container {
+      position: relative;
+      width: 100%;
+      max-width: 380px;
+      aspect-ratio: 1;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 2px solid rgba(255,255,255,0.1);
+      background: #1a1a2e;
+    }
+
+    .player-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .pixel-overlay {
+      position: absolute;
+      inset: 0;
+      image-rendering: pixelated;
+    }
+
+    /* Hint banner */
+    .hint-wrap {
+      width: 100%;
+      max-width: 380px;
+      min-height: 44px;
+    }
+    .hint-text {
+      background: rgba(0,91,158,0.4);
+      border: 1px solid rgba(0,91,158,0.6);
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      color: rgba(255,255,255,0.9);
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    /* Attempt button */
+    .attempt-btn {
+      background: var(--red);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 16px 0;
+      width: 100%;
+      max-width: 380px;
+      font-family: 'Arial Black', sans-serif;
+      font-size: 18px;
+      letter-spacing: 2px;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(200,16,46,0.5);
+      transition: transform 0.1s;
+    }
+    .attempt-btn:active { transform: scale(0.97); }
+    .attempt-btn:disabled { background: #444; box-shadow: none; cursor: default; }
+
+    /* Guess input */
+    .guess-section {
+      width: 100%;
+      max-width: 380px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .guess-label {
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+    }
+    .guess-input {
+      background: rgba(255,255,255,0.08);
+      border: 1.5px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      padding: 14px 16px;
+      color: white;
+      font-size: 18px;
+      font-family: Arial, sans-serif;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .guess-input:focus { border-color: rgba(255,255,255,0.4); }
+    .guess-input::placeholder { color: rgba(255,255,255,0.25); }
+
+    .guess-btn {
+      background: var(--gold);
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      padding: 14px;
+      font-family: 'Arial Black', sans-serif;
+      font-size: 16px;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+    .guess-btn:active { transform: scale(0.97); }
+
+    /* Result screen overlay */
+    .result-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 100;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      gap: 16px;
+    }
+    .result-overlay.show { display: flex; }
+    .result-emoji { font-size: 72px; }
+    .result-title { font-size: clamp(24px, 7vw, 40px); letter-spacing: 2px; }
+    .result-title.win { color: var(--gold); }
+    .result-title.lose { color: rgba(255,255,255,0.7); }
+    .result-answer {
+      font-family: Arial, sans-serif;
+      font-size: 18px;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.5;
+    }
+    .result-score {
+      font-family: Arial, sans-serif;
+      font-size: 15px;
+      color: rgba(255,255,255,0.5);
+    }
+    .play-again-btn {
+      background: var(--red);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 16px 40px;
+      font-family: 'Arial Black', sans-serif;
+      font-size: 18px;
+      letter-spacing: 2px;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    /* Wrong guess flash */
+    @keyframes wrongFlash {
+      0%, 100% { border-color: rgba(255,255,255,0.15); }
+      50% { border-color: var(--red); }
+    }
+    .wrong-flash { animation: wrongFlash 0.4s ease; }
+  </style>
+</head>
+<body>
+
+<!-- START SCREEN -->
+<div id="start-screen">
+  <div class="djurgardenBg"></div>
+  <!-- DIF Crest SVG (simplified) -->
+  <svg class="crest-bg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <path d="M100 10 L180 50 L180 130 C180 165 140 185 100 195 C60 185 20 165 20 130 L20 50 Z" fill="none" stroke="#005B9E" stroke-width="8"/>
+    <path d="M100 30 L165 62 L165 128 C165 155 132 172 100 180 C68 172 35 155 35 128 L35 62 Z" fill="#C8102E" stroke="none"/>
+    <text x="100" y="115" text-anchor="middle" font-family="Arial Black" font-size="36" fill="white" font-weight="900">DIF</text>
+    <text x="100" y="150" text-anchor="middle" font-family="Arial" font-size="12" fill="rgba(255,255,255,0.7)" letter-spacing="3">DJURGÅRDEN</text>
+  </svg>
+
+  <div class="start-content">
+    <div class="game-title">PIXLAREN</div>
+    <div class="game-subtitle">Gissa fotbollsstjärnan</div>
+    <div class="dif-badge">
+      <svg width="20" height="20" viewBox="0 0 200 200"><path d="M100 10 L180 50 L180 130 C180 165 140 185 100 195 C60 185 20 165 20 130 L20 50 Z" fill="#C8102E"/><text x="100" y="125" text-anchor="middle" font-family="Arial Black" font-size="60" fill="white">D</text></svg>
+      <span>DJURGÅRDENS IF EDITION</span>
+    </div>
+    <button class="start-btn" onclick="startGame()">STARTA</button>
+    <p class="instructions">Bilden avslöjas steg för steg. Ju färre försök — desto fler poäng!</p>
+  </div>
+</div>
+
+<!-- GAME SCREEN -->
+<div id="game-screen">
+  <div class="game-header">
+    <div class="title">PIXLAREN</div>
+    <div class="attempt-badge" id="attempt-badge">FÖRSÖK 0</div>
+  </div>
+
+  <div class="img-container">
+    <img id="player-img" class="player-img" src="" alt="Fotbollsspelare" crossorigin="anonymous" />
+    <canvas id="pixel-canvas" class="pixel-overlay"></canvas>
+  </div>
+
+  <div class="hint-wrap">
+    <div class="hint-text" id="hint-text" style="display:none"></div>
+  </div>
+
+  <button class="attempt-btn" id="attempt-btn" onclick="revealMore()">
+    FÖRSÖK (1)
+  </button>
+
+  <div class="guess-section">
+    <div class="guess-label">Din gissning</div>
+    <input class="guess-input" id="guess-input" type="text" placeholder="Skriv spelarens namn..." autocomplete="off" autocorrect="off" spellcheck="false" />
+    <button class="guess-btn" onclick="checkGuess()">GISSA</button>
+  </div>
+</div>
+
+<!-- RESULT OVERLAY -->
+<div class="result-overlay" id="result-overlay">
+  <div class="result-emoji" id="result-emoji"></div>
+  <div class="result-title" id="result-title"></div>
+  <div class="result-answer" id="result-answer"></div>
+  <div class="result-score" id="result-score"></div>
+  <button class="play-again-btn" onclick="resetGame()">SPELA IGEN</button>
+</div>
+
+<script>
+// ── Players database ──────────────────────────────────────────────────────────
+// Using Wikipedia Commons / publicly available player images
+const PLAYERS = [
+  {
+    name: "Zlatan Ibrahimović",
+    hints: ["Spelade i Malmö FF som ung", "Känd för akrobatiska mål", "En av Sveriges mest kända spelare"],
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Zlatan_Ibrahimovic_2019_-_2.jpg/800px-Zlatan_Ibrahimovic_2019_-_2.jpg",
+    alternativeNames: ["zlatan", "ibrahimovic", "ibrahimović"],
+  },
+  {
+    name: "Henrik Larsson",
+    hints: ["Spelade för Celtic", "Nicknames: 'King of Kings'", "VM 1994 och 2002"],
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Henrik_Larsson.jpg/800px-Henrik_Larsson.jpg",
+    alternativeNames: ["henrik", "larsson", "henrik larsson"],
+  },
+  {
+    name: "Freddie Ljungberg",
+    hints: ["Spelade för Arsenal i Premier League", "Känd för sitt röda hår", "Deltog i VM 2002"],
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Freddie_ljungberg_2006.jpg/800px-Freddie_ljungberg_2006.jpg",
+    alternativeNames: ["freddie", "ljungberg", "freddie ljungberg"],
+  },
+  {
+    name: "Kim Källström",
+    hints: ["Spelade bl.a. för Lyon och Arsenal", "Svensk landslagsmittfältare", "VM 2006"],
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Kim_Källström_2012.jpg/800px-Kim_Källström_2012.jpg",
+    alternativeNames: ["kim", "källström", "kallstrom", "kim källström"],
+  },
+  {
+    name: "Seb Larsson",
+    hints: ["Spelade för Sunderland", "Frikaspark-specialist", "Svensk landslagsspelare"],
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Seb_Larsson_2013.jpg/800px-Seb_Larsson_2013.jpg",
+    alternativeNames: ["seb", "seb larsson", "sebastian larsson"],
+  },
+];
+
+// Pixel sizes: from very blocky to clear
+const PIXEL_SIZES = [48, 36, 24, 16, 10, 6, 3, 1];
+const MAX_HINTS = 3;
+
+let currentPlayer = null;
+let currentAttempt = 0;
+let gameOver = false;
+let imgLoaded = false;
+
+function pickPlayer() {
+  return PLAYERS[Math.floor(Math.random() * PLAYERS.length)];
+}
+
+function startGame() {
+  document.getElementById('start-screen').style.display = 'none';
+  const gs = document.getElementById('game-screen');
+  gs.style.display = 'flex';
+  resetGame(false);
+}
+
+function resetGame(showStart = true) {
+  if (showStart) {
+    document.getElementById('result-overlay').classList.remove('show');
+    document.getElementById('game-screen').style.display = 'flex';
+  }
+  currentAttempt = 0;
+  gameOver = false;
+  imgLoaded = false;
+  document.getElementById('attempt-badge').textContent = 'FÖRSÖK 0';
+  document.getElementById('attempt-btn').textContent = 'FÖRSÖK (1)';
+  document.getElementById('attempt-btn').disabled = false;
+  document.getElementById('guess-input').value = '';
+  document.getElementById('hint-text').style.display = 'none';
+
+  currentPlayer = pickPlayer();
+
+  const img = document.getElementById('player-img');
+  img.onload = () => {
+    imgLoaded = true;
+    applyPixelation(PIXEL_SIZES[0]);
+  };
+  img.onerror = () => {
+    // Fallback: show colored placeholder
+    imgLoaded = false;
+    const canvas = document.getElementById('pixel-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = 380; canvas.height = 380;
+    ctx.fillStyle = '#1a1a2e';
+    ctx.fillRect(0, 0, 380, 380);
+    ctx.fillStyle = '#C8102E';
+    ctx.font = 'bold 40px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('?', 190, 210);
+  };
+  img.src = currentPlayer.imageUrl;
+  applyPixelation(PIXEL_SIZES[0]);
+}
+
+function applyPixelation(pixelSize) {
+  const img = document.getElementById('player-img');
+  const canvas = document.getElementById('pixel-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = img.offsetWidth || 380;
+  const H = img.offsetHeight || 380;
+  canvas.width = W;
+  canvas.height = H;
+
+  if (pixelSize <= 1) {
+    // Fully revealed — clear overlay
+    ctx.clearRect(0, 0, W, H);
+    return;
+  }
+
+  // Draw tiny, then scale up for pixelation effect
+  const offscreen = document.createElement('canvas');
+  const sw = Math.ceil(W / pixelSize);
+  const sh = Math.ceil(H / pixelSize);
+  offscreen.width = sw;
+  offscreen.height = sh;
+  const oc = offscreen.getContext('2d');
+  oc.imageSmoothingEnabled = false;
+  oc.drawImage(img, 0, 0, sw, sh);
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(offscreen, 0, 0, sw, sh, 0, 0, W, H);
+}
+
+function revealMore() {
+  if (gameOver) return;
+  currentAttempt++;
+
+  document.getElementById('attempt-badge').textContent = `FÖRSÖK ${currentAttempt}`;
+
+  const nextPixelIdx = Math.min(currentAttempt, PIXEL_SIZES.length - 1);
+  const pixelSize = PIXEL_SIZES[nextPixelIdx];
+
+  if (imgLoaded || document.getElementById('player-img').complete) {
+    applyPixelation(pixelSize);
+  }
+
+  // Show hint
+  const hintIdx = Math.floor((currentAttempt - 1) / 2);
+  if (hintIdx < currentPlayer.hints.length) {
+    const hintEl = document.getElementById('hint-text');
+    hintEl.style.display = 'block';
+    hintEl.textContent = '💡 ' + currentPlayer.hints[hintIdx];
+  }
+
+  const nextAttempt = currentAttempt + 1;
+  const btn = document.getElementById('attempt-btn');
+
+  if (currentAttempt >= PIXEL_SIZES.length - 1) {
+    btn.textContent = `VISA SVAR`;
+    btn.onclick = revealAnswer;
+  } else {
+    btn.textContent = `FÖRSÖK (${nextAttempt})`;
+  }
+}
+
+function checkGuess() {
+  const input = document.getElementById('guess-input');
+  const guess = input.value.trim().toLowerCase();
+  if (!guess) return;
+
+  const correct = currentPlayer.name.toLowerCase();
+  const alternatives = currentPlayer.alternativeNames || [];
+  const isCorrect = guess === correct || alternatives.includes(guess) ||
+    correct.includes(guess) && guess.length > 3;
+
+  if (isCorrect) {
+    gameOver = true;
+    const score = Math.max(10 - currentAttempt * 2, 1);
+    // Reveal fully
+    applyPixelation(1);
+    showResult(true, score);
+  } else {
+    input.classList.add('wrong-flash');
+    setTimeout(() => input.classList.remove('wrong-flash'), 400);
+    input.value = '';
+    input.placeholder = 'Fel! Försök igen...';
+    setTimeout(() => input.placeholder = 'Skriv spelarens namn...', 1500);
+  }
+}
+
+function revealAnswer() {
+  gameOver = true;
+  applyPixelation(1);
+  showResult(false, 0);
+}
+
+function showResult(won, score) {
+  const overlay = document.getElementById('result-overlay');
+  const emoji = document.getElementById('result-emoji');
+  const title = document.getElementById('result-title');
+  const answer = document.getElementById('result-answer');
+  const scoreEl = document.getElementById('result-score');
+
+  if (won) {
+    emoji.textContent = '🏆';
+    title.className = 'result-title win';
+    title.textContent = 'RÄTT!';
+    answer.textContent = currentPlayer.name;
+    scoreEl.textContent = `Du gissade rätt på försök ${currentAttempt + 1} · ${score} poäng`;
+  } else {
+    emoji.textContent = '😅';
+    title.className = 'result-title lose';
+    title.textContent = 'SVARET ÄR...';
+    answer.textContent = currentPlayer.name;
+    scoreEl.textContent = 'Bättre lycka nästa gång!';
+  }
+
+  overlay.classList.add('show');
+}
+
+// Allow Enter key for guessing
+document.getElementById('guess-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') checkGuess();
+});
+
+// Redraw on resize
+window.addEventListener('resize', () => {
+  if (currentPlayer && currentAttempt > 0) {
+    const idx = Math.min(currentAttempt, PIXEL_SIZES.length - 1);
+    applyPixelation(PIXEL_SIZES[idx]);
+  }
+});
+</script>
+</body>
+</html>
