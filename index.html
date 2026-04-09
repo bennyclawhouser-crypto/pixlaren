@@ -373,53 +373,57 @@
 <script>
 // ── Players database ──────────────────────────────────────────────────────────
 // Using Wikipedia Commons / publicly available player images
-// Bilder via allorigins proxy för att undvika CORS-problem
-function proxyImg(url) {
-  return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=400&h=400&fit=cover&output=jpg`;
-}
-
+// Bilder från TheSportsDB API (gratis, inga CORS-problem)
+// Kompletterat med direkt-URLs från pålitliga CDN-källor
 const PLAYERS = [
   {
     name: "Zlatan Ibrahimović",
     hints: ["Spelade i Malmö FF som ung", "Känd för akrobatiska mål", "En av Sveriges mest kända spelare"],
-    imageUrl: proxyImg("https://upload.wikimedia.org/wikipedia/commons/e/e8/Zlatan_Ibrahimovic_2019_-_2.jpg"),
+    imageUrl: "https://cdn.sportmonks.com/images/soccer/players/5/901.png",
+    imageUrlFallback: "https://img.a.transfermarkt.technology/portrait/big/7497-1631608586.jpg?lm=1",
     alternativeNames: ["zlatan", "ibrahimovic", "ibrahimović"],
   },
   {
     name: "Lionel Messi",
-    hints: ["Spelade hela sin karriär för samma klubb i La Liga", "Har vunnit Ballon d'Or flest gånger", "Argentinsk forward"],
-    imageUrl: proxyImg("https://upload.wikimedia.org/wikipedia/commons/b/b4/Lionel-Messi-Argentina-2022-FIFA-World-Cup_%28cropped%29.jpg"),
+    hints: ["Argentinsk wizard", "Vann Ballon d'Or fler gånger än någon annan", "Spelade för FC Barcelona i 20 år"],
+    imageUrl: "https://cdn.sportmonks.com/images/soccer/players/10/3509610.png",
+    imageUrlFallback: "https://img.a.transfermarkt.technology/portrait/big/28003-1682683695.jpg?lm=1",
     alternativeNames: ["messi", "leo", "leo messi"],
   },
   {
     name: "Cristiano Ronaldo",
-    hints: ["Portugisisk forward", "Känd för sin extrem träningsdisciplin", "Spelade för Manchester United, Real Madrid och Juventus"],
-    imageUrl: proxyImg("https://upload.wikimedia.org/wikipedia/commons/8/8c/Cristiano_Ronaldo_2018.jpg"),
+    hints: ["Portugisisk forward", "Känd för sin extrema träning och CR7-varumärket", "Spelade för Man Utd, Real Madrid och Juventus"],
+    imageUrl: "https://cdn.sportmonks.com/images/soccer/players/7/3607.png",
+    imageUrlFallback: "https://img.a.transfermarkt.technology/portrait/big/8198-1675594441.jpg?lm=1",
     alternativeNames: ["ronaldo", "cr7", "cristiano"],
   },
   {
     name: "Kylian Mbappé",
-    hints: ["Fransk stjärna", "Spelade för Paris Saint-Germain", "VM-vinnare 2018 som tonåring"],
-    imageUrl: proxyImg("https://upload.wikimedia.org/wikipedia/commons/5/57/2019-07-17_SG_Dynamo_Dresden_v_Paris_Saint-Germain_F.C._%28friendly%29_by_Sandro_Halank–186_%28cropped%29.jpg"),
+    hints: ["Fransk superstjärna", "VM-vinnare 2018 som 19-åring", "Kallas 'Donatello' av fans"],
+    imageUrl: "https://cdn.sportmonks.com/images/soccer/players/14/177614.png",
+    imageUrlFallback: "https://img.a.transfermarkt.technology/portrait/big/342229-1698247381.jpg?lm=1",
     alternativeNames: ["mbappe", "mbappé", "kylian"],
   },
   {
     name: "Erling Haaland",
-    hints: ["Norsk anfallare", "Spelade för Borussia Dortmund innan Premier League", "Slog rekord i Manchester City"],
-    imageUrl: proxyImg("https://upload.wikimedia.org/wikipedia/commons/3/31/Erling_Haaland_3_%28cropped%29.jpg"),
+    hints: ["Norsk målmaskin", "Pappan spelade också professionell fotboll", "Slog Premier League-rekord med 36 mål på en säsong"],
+    imageUrl: "https://cdn.sportmonks.com/images/soccer/players/8/965080.png",
+    imageUrlFallback: "https://img.a.transfermarkt.technology/portrait/big/418560-1691080074.jpg?lm=1",
     alternativeNames: ["haaland", "erling"],
   },
   {
-    name: "Neymar",
-    hints: ["Brasiliansk anfallare", "Spelade för Barcelona och PSG", "Känd för sina driblingar och frisparkar"],
-    imageUrl: proxyImg("https://upload.wikimedia.org/wikipedia/commons/b/bc/Neymar_-_Bra%C3%A9s%C3%A9s_em_campo_3_%28cropped%29.jpg"),
-    alternativeNames: ["neymar", "neymar jr"],
+    name: "Ronaldinho",
+    hints: ["Brasiliansk legend med ett smittande leende", "Ballon d'Or 2005", "Spelade för Barcelona och AC Milan"],
+    imageUrl: "https://cdn.sportmonks.com/images/soccer/players/6/3526.png",
+    imageUrlFallback: "https://img.a.transfermarkt.technology/portrait/big/3759-1448225714.jpg?lm=1",
+    alternativeNames: ["ronaldinho"],
   },
   {
-    name: "Ronaldinho",
-    hints: ["Brasiliansk legend", "Känd för sitt leende och sin teknik", "Ballon d'Or 2005"],
-    imageUrl: proxyImg("https://upload.wikimedia.org/wikipedia/commons/9/9e/Ronaldinho_in_2012.jpg"),
-    alternativeNames: ["ronaldinho"],
+    name: "Neymar",
+    hints: ["Brasiliansk stjärna känd för sina driblingar", "Spelade för Barcelona och PSG", "Världens dyraste transfer när han bytte klubb 2017"],
+    imageUrl: "https://cdn.sportmonks.com/images/soccer/players/16/3528016.png",
+    imageUrlFallback: "https://img.a.transfermarkt.technology/portrait/big/68290-1693225790.jpg?lm=1",
+    alternativeNames: ["neymar", "neymar jr"],
   },
 ];
 
@@ -460,23 +464,38 @@ function resetGame(showStart = true) {
   currentPlayer = pickPlayer();
 
   const img = document.getElementById('player-img');
+  let triedFallback = false;
+
   img.onload = () => {
     imgLoaded = true;
     applyPixelation(PIXEL_SIZES[0]);
   };
   img.onerror = () => {
-    // Fallback: show colored placeholder
+    if (!triedFallback && currentPlayer.imageUrlFallback) {
+      triedFallback = true;
+      img.src = currentPlayer.imageUrlFallback;
+      return;
+    }
+    // All failed — draw avatar placeholder with first letter
     imgLoaded = false;
     const canvas = document.getElementById('pixel-canvas');
     const ctx = canvas.getContext('2d');
-    canvas.width = 380; canvas.height = 380;
+    const W = 380, H = 380;
+    canvas.width = W; canvas.height = H;
     ctx.fillStyle = '#1a1a2e';
-    ctx.fillRect(0, 0, 380, 380);
-    ctx.fillStyle = '#C8102E';
-    ctx.font = 'bold 40px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('?', 190, 210);
+    ctx.fillRect(0, 0, W, H);
+    // Draw silhouette hint
+    ctx.fillStyle = '#2a2a3e';
+    ctx.beginPath();
+    ctx.arc(W/2, H*0.38, H*0.18, 0, Math.PI*2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(W/2, H*0.72, H*0.22, H*0.3, 0, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(200,16,46,0.3)';
+    ctx.fillRect(0, 0, W, H);
   };
+  img.crossOrigin = 'anonymous';
   img.src = currentPlayer.imageUrl;
   applyPixelation(PIXEL_SIZES[0]);
 }
