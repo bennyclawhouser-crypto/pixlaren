@@ -489,17 +489,17 @@
     </div>
 
     <!-- Name input -->
-    <div style="width:100%;max-width:340px;">
+    <div style="width:100%;max-width:320px;">
       <input id="player-name-input" type="text" maxlength="14" placeholder="Ditt namn..."
-        style="width:100%;background:rgba(0,0,0,0.4);border:2px solid rgba(255,255,255,0.3);border-radius:10px;padding:14px 16px;color:white;font-size:18px;font-family:Arial,sans-serif;outline:none;text-align:center;"
+        style="width:100%;background:rgba(0,0,0,0.4);border:2px solid rgba(255,255,255,0.3);border-radius:12px;padding:16px 16px;color:white;font-size:18px;font-family:Arial,sans-serif;outline:none;text-align:center;"
         oninput="const v=this.value.trim().length>0; ['start-btn','brawl-btn','love-btn'].forEach(id=>{const b=document.getElementById(id);if(b){b.disabled=!v;b.style.opacity=v?'1':'0.4'}});"
         onkeydown="if(event.key==='Enter' && this.value.trim()) startGame('football')" />
     </div>
-    <!-- Mode buttons grid -->
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;width:100%;max-width:340px;">
-      <button id="start-btn" onclick="startGame('football')" disabled style="opacity:0.4;background:#C8102E;color:white;border:none;border-radius:12px;padding:18px 8px;font-family:'Arial Black',sans-serif;font-size:15px;letter-spacing:1px;cursor:pointer;box-shadow:0 6px 20px rgba(200,16,46,0.5);">FOTBOLL</button>
-      <button id="brawl-btn" onclick="startGame('brawl')" disabled style="opacity:0.4;background:#a855f7;color:white;border:none;border-radius:12px;padding:18px 8px;font-family:'Arial Black',sans-serif;font-size:15px;letter-spacing:1px;cursor:pointer;box-shadow:0 6px 20px rgba(168,85,247,0.5);">BRAWL</button>
-      <button id="love-btn" onclick="startGame('love')" disabled style="opacity:0.4;background:#e91e8c;color:white;border:none;border-radius:12px;padding:18px 8px;font-family:'Arial Black',sans-serif;font-size:15px;letter-spacing:1px;cursor:pointer;box-shadow:0 6px 20px rgba(233,30,140,0.5);">LOVE</button>
+    <!-- Mode buttons — equal size, centered -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;max-width:320px;margin:0 auto;">
+      <button id="start-btn" onclick="startGame('football')" disabled style="opacity:0.4;background:#C8102E;color:white;border:none;border-radius:14px;padding:20px 0;width:100%;font-family:'Arial Black',sans-serif;font-size:14px;letter-spacing:1px;cursor:pointer;box-shadow:0 6px 20px rgba(200,16,46,0.5);">FOTBOLL</button>
+      <button id="brawl-btn" onclick="startGame('brawl')" disabled style="opacity:0.4;background:#a855f7;color:white;border:none;border-radius:14px;padding:20px 0;width:100%;font-family:'Arial Black',sans-serif;font-size:14px;letter-spacing:1px;cursor:pointer;box-shadow:0 6px 20px rgba(168,85,247,0.5);">BRAWL</button>
+      <button id="love-btn" onclick="startGame('love')" disabled style="opacity:0.4;background:#e91e8c;color:white;border:none;border-radius:14px;padding:20px 0;width:100%;font-family:'Arial Black',sans-serif;font-size:14px;letter-spacing:1px;cursor:pointer;box-shadow:0 6px 20px rgba(233,30,140,0.5);">LOVE</button>
     </div>
     <p class="instructions">Bilden avslöjas steg för steg. Ju färre försök — desto fler poäng!</p>
   </div>
