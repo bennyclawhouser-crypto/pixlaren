@@ -469,19 +469,19 @@
       50%     { transform: translateY(-18px); }
     }
     @keyframes chaseBall {
-      0%   { left: 58%; transform: scaleX(-1); }
-      45%  { left: 43%; transform: scaleX(-1); }
-      50%  { left: 43%; transform: scaleX(-1) rotate(-20deg); }
-      55%  { left: 46%; transform: scaleX(-1); }
-      100% { left: 58%; transform: scaleX(-1); }
+      0%   { left: 60%; }
+      45%  { left: 46%; }
+      50%  { left: 46%; transform: rotate(-20deg); }
+      55%  { left: 48%; }
+      100% { left: 60%; }
     }
     @keyframes chaseBallBounce {
-      0%,45%,55%,100% { bottom: 8px; }
-      50% { bottom: 20px; }
+      0%,45%,55%,100% { top: 44%; }
+      50% { top: 40%; }
     }
     @keyframes passBall {
-      0%   { left: 35%; }
-      100% { left: 62%; }
+      0%   { left: 42%; top: 46%; }
+      100% { left: 57%; top: 48%; }
     }
     @keyframes ballRoll {
       0%   { left: -20px; }
@@ -512,60 +512,201 @@
 <!-- Stickmen playing football -->
 <div class="stickmen-layer" aria-hidden="true">
 
-  <!-- White ball — bounces between players in center -->
-  <div id="match-ball" style="position:absolute;bottom:22px;left:50%;width:14px;height:14px;border-radius:50%;background:white;border:2px solid rgba(0,0,0,0.2);transform:translateX(-50%);animation:passBall 2s ease-in-out infinite alternate;"></div>
+  <!-- Ball — passes between center players -->
+  <div id="match-ball" style="position:absolute;top:47%;left:50%;width:14px;height:14px;border-radius:50%;background:white;border:2px solid rgba(0,0,0,0.2);transform:translate(-50%,-50%);animation:passBall 2s ease-in-out infinite alternate;"></div>
 
-  <!-- Blue chaser — runs toward ball and tries to tackle -->
-  <div style="position:absolute;animation:chaseBall 3s ease-in-out infinite, chaseBallBounce 3s ease-in-out infinite;">
-    <svg width="32" height="54" viewBox="0 0 32 54" fill="none" opacity="0.42">
-      <circle cx="16" cy="5" r="5" stroke="rgba(100,180,255,1)" stroke-width="2.2"/>
-      <line x1="16" y1="10" x2="16" y2="30" stroke="rgba(100,180,255,1)" stroke-width="2.2"/>
-      <line x1="16" y1="17" x2="28" y2="10" stroke="rgba(100,180,255,1)" stroke-width="2.2"/>
-      <line x1="16" y1="17" x2="2" y2="22" stroke="rgba(100,180,255,1)" stroke-width="2.2"/>
-      <line x1="16" y1="30" x2="28" y2="20" stroke="rgba(100,180,255,1)" stroke-width="2.2"/>
-      <line x1="16" y1="30" x2="6" y2="48" stroke="rgba(100,180,255,1)" stroke-width="2.2"/>
+  <!-- Blue chaser -->
+  <div style="position:absolute;top:44%;animation:chaseBall 3s ease-in-out infinite, chaseBallBounce 3s ease-in-out infinite;">
+    <svg width="30" height="50" viewBox="0 0 30 50" fill="none" opacity="0.42">
+      <circle cx="15" cy="5" r="5" stroke="rgba(80,160,255,1)" stroke-width="2.2"/>
+      <line x1="15" y1="10" x2="15" y2="29" stroke="rgba(80,160,255,1)" stroke-width="2.2"/>
+      <line x1="15" y1="17" x2="28" y2="10" stroke="rgba(80,160,255,1)" stroke-width="2.2"/>
+      <line x1="15" y1="17" x2="2" y2="20" stroke="rgba(80,160,255,1)" stroke-width="2.2"/>
+      <line x1="15" y1="29" x2="26" y2="18" stroke="rgba(80,160,255,1)" stroke-width="2.2"/>
+      <line x1="15" y1="29" x2="5" y2="46" stroke="rgba(80,160,255,1)" stroke-width="2.2"/>
     </svg>
   </div>
 
-  <!-- Team A: 9 white players spread around center left -->
-  <div style="position:absolute;bottom:8px;left:20%;display:flex;gap:18px;align-items:flex-end;">
-    <svg width="28" height="50" viewBox="0 0 28 50" fill="none" opacity="0.28"><circle cx="14" cy="5" r="4" stroke="white" stroke-width="1.8"/><line x1="14" y1="9" x2="14" y2="28" stroke="white" stroke-width="1.8"/><line x1="14" y1="15" x2="3" y2="22" stroke="white" stroke-width="1.8"/><line x1="14" y1="15" x2="25" y2="18" stroke="white" stroke-width="1.8"/><line x1="14" y1="28" x2="6" y2="46" stroke="white" stroke-width="1.8"/><line x1="14" y1="28" x2="22" y2="44" stroke="white" stroke-width="1.8"/></svg>
-    <svg width="28" height="50" viewBox="0 0 28 50" fill="none" opacity="0.25"><circle cx="14" cy="5" r="4" stroke="white" stroke-width="1.8"/><line x1="14" y1="9" x2="14" y2="28" stroke="white" stroke-width="1.8"/><line x1="14" y1="15" x2="2" y2="18" stroke="white" stroke-width="1.8"/><line x1="14" y1="15" x2="26" y2="22" stroke="white" stroke-width="1.8"/><line x1="14" y1="28" x2="5" y2="47" stroke="white" stroke-width="1.8"/><line x1="14" y1="28" x2="23" y2="45" stroke="white" stroke-width="1.8"/></svg>
-    <svg width="28" height="50" viewBox="0 0 28 50" fill="none" opacity="0.3"><circle cx="14" cy="5" r="4" stroke="white" stroke-width="1.8"/><line x1="14" y1="9" x2="14" y2="28" stroke="white" stroke-width="1.8"/><line x1="14" y1="15" x2="4" y2="20" stroke="white" stroke-width="1.8"/><line x1="14" y1="15" x2="24" y2="16" stroke="white" stroke-width="1.8"/><line x1="14" y1="28" x2="7" y2="46" stroke="white" stroke-width="1.8"/><line x1="14" y1="28" x2="21" y2="43" stroke="white" stroke-width="1.8"/></svg>
-    <svg width="28" height="50" viewBox="0 0 28 50" fill="none" opacity="0.22"><circle cx="14" cy="5" r="4" stroke="white" stroke-width="1.8"/><line x1="14" y1="9" x2="14" y2="28" stroke="white" stroke-width="1.8"/><line x1="14" y1="15" x2="2" y2="24" stroke="white" stroke-width="1.8"/><line x1="14" y1="15" x2="26" y2="19" stroke="white" stroke-width="1.8"/><line x1="14" y1="28" x2="6" y2="45" stroke="white" stroke-width="1.8"/><line x1="14" y1="28" x2="22" y2="46" stroke="white" stroke-width="1.8"/></svg>
-  </div>
-
-  <div style="position:absolute;bottom:22px;left:24%;display:flex;gap:20px;align-items:flex-end;">
-    <svg width="28" height="50" viewBox="0 0 28 50" fill="none" opacity="0.26"><circle cx="14" cy="5" r="4" stroke="white" stroke-width="1.8"/><line x1="14" y1="9" x2="14" y2="28" stroke="white" stroke-width="1.8"/><line x1="14" y1="16" x2="28" y2="10" stroke="white" stroke-width="1.8"/><line x1="14" y1="16" x2="0" y2="12" stroke="white" stroke-width="1.8"/><line x1="14" y1="28" x2="4" y2="46" stroke="white" stroke-width="1.8"/><line x1="14" y1="28" x2="24" y2="44" stroke="white" stroke-width="1.8"/></svg>
-    <svg width="28" height="50" viewBox="0 0 28 50" fill="none" opacity="0.28"><circle cx="14" cy="5" r="4" stroke="white" stroke-width="1.8"/><line x1="14" y1="9" x2="14" y2="28" stroke="white" stroke-width="1.8"/><line x1="14" y1="15" x2="3" y2="19" stroke="white" stroke-width="1.8"/><line x1="14" y1="15" x2="25" y2="17" stroke="white" stroke-width="1.8"/><line x1="14" y1="28" x2="5" y2="46" stroke="white" stroke-width="1.8"/><line x1="14" y1="28" x2="23" y2="45" stroke="white" stroke-width="1.8"/></svg>
-  </div>
-
-  <!-- Player with ball — kicking motion, center -->
-  <div style="position:absolute;bottom:8px;left:44%;animation:bounce 0.8s ease-in-out infinite alternate;">
-    <svg width="32" height="54" viewBox="0 0 32 54" fill="none" opacity="0.35">
-      <circle cx="16" cy="5" r="5" stroke="white" stroke-width="2"/>
-      <line x1="16" y1="10" x2="16" y2="30" stroke="white" stroke-width="2"/>
-      <line x1="16" y1="17" x2="2" y2="24" stroke="white" stroke-width="2"/>
-      <line x1="16" y1="17" x2="30" y2="14" stroke="white" stroke-width="2"/>
-      <line x1="16" y1="30" x2="6" y2="50" stroke="white" stroke-width="2"/>
-      <line x1="16" y1="30" x2="30" y2="22" stroke="white" stroke-width="2"/>
+  <div style="position:absolute;left:38%;top:42%;">
+    <svg width="28" height="48" viewBox="0 0 28 48" fill="none" opacity="0.22">
+      <circle cx="14" cy="5" r="4" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="9" x2="14" y2="27" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="3" y2="21" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="25" y2="19" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="6" y2="44" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="22" y2="43" stroke="white" stroke-width="1.8"/>
     </svg>
   </div>
-
-  <!-- Team B: 9 blue players spread around center right -->
-  <div style="position:absolute;bottom:8px;right:20%;display:flex;gap:18px;align-items:flex-end;">
-    <svg width="28" height="50" viewBox="0 0 28 50" fill="none" opacity="0.28"><circle cx="14" cy="5" r="4" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="9" x2="14" y2="28" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="15" x2="3" y2="22" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="15" x2="25" y2="18" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="28" x2="6" y2="46" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="28" x2="22" y2="44" stroke="rgba(150,200,255,1)" stroke-width="1.8"/></svg>
-    <svg width="28" height="50" viewBox="0 0 28 50" fill="none" opacity="0.25"><circle cx="14" cy="5" r="4" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="9" x2="14" y2="28" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="15" x2="2" y2="18" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="15" x2="26" y2="22" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="28" x2="5" y2="47" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="28" x2="23" y2="45" stroke="rgba(150,200,255,1)" stroke-width="1.8"/></svg>
-    <svg width="28" height="50" viewBox="0 0 28 50" fill="none" opacity="0.3"><circle cx="14" cy="5" r="4" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="9" x2="14" y2="28" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="15" x2="4" y2="20" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="15" x2="24" y2="16" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="28" x2="7" y2="46" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="28" x2="21" y2="43" stroke="rgba(150,200,255,1)" stroke-width="1.8"/></svg>
-    <svg width="28" height="50" viewBox="0 0 28 50" fill="none" opacity="0.22"><circle cx="14" cy="5" r="4" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="9" x2="14" y2="28" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="15" x2="2" y2="24" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="15" x2="26" y2="19" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="28" x2="6" y2="45" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="28" x2="22" y2="46" stroke="rgba(150,200,255,1)" stroke-width="1.8"/></svg>
+  <div style="position:absolute;left:43%;top:38%;">
+    <svg width="28" height="48" viewBox="0 0 28 48" fill="none" opacity="0.26">
+      <circle cx="14" cy="5" r="4" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="9" x2="14" y2="27" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="3" y2="21" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="25" y2="19" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="6" y2="44" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="22" y2="43" stroke="white" stroke-width="1.8"/>
+    </svg>
   </div>
-
-  <div style="position:absolute;bottom:22px;right:24%;display:flex;gap:20px;align-items:flex-end;">
-    <svg width="28" height="50" viewBox="0 0 28 50" fill="none" opacity="0.26"><circle cx="14" cy="5" r="4" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="9" x2="14" y2="28" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="16" x2="28" y2="10" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="16" x2="0" y2="12" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="28" x2="4" y2="46" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="28" x2="24" y2="44" stroke="rgba(150,200,255,1)" stroke-width="1.8"/></svg>
-    <svg width="28" height="50" viewBox="0 0 28 50" fill="none" opacity="0.28"><circle cx="14" cy="5" r="4" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="9" x2="14" y2="28" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="15" x2="3" y2="19" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="15" x2="25" y2="17" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="28" x2="5" y2="46" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="28" x2="23" y2="45" stroke="rgba(150,200,255,1)" stroke-width="1.8"/></svg>
-    <svg width="28" height="50" viewBox="0 0 28 50" fill="none" opacity="0.24"><circle cx="14" cy="5" r="4" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="9" x2="14" y2="28" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="15" x2="1" y2="21" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="15" x2="27" y2="20" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="28" x2="4" y2="47" stroke="rgba(150,200,255,1)" stroke-width="1.8"/><line x1="14" y1="28" x2="24" y2="46" stroke="rgba(150,200,255,1)" stroke-width="1.8"/></svg>
+  <div style="position:absolute;left:47%;top:45%;">
+    <svg width="28" height="48" viewBox="0 0 28 48" fill="none" opacity="0.3">
+      <circle cx="14" cy="5" r="4" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="9" x2="14" y2="27" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="3" y2="21" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="25" y2="19" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="6" y2="44" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="22" y2="43" stroke="white" stroke-width="1.8"/>
+    </svg>
   </div>
-
+  <div style="position:absolute;left:41%;top:50%;">
+    <svg width="28" height="48" viewBox="0 0 28 48" fill="none" opacity="0.22">
+      <circle cx="14" cy="5" r="4" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="9" x2="14" y2="27" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="3" y2="21" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="25" y2="19" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="6" y2="44" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="22" y2="43" stroke="white" stroke-width="1.8"/>
+    </svg>
+  </div>
+  <div style="position:absolute;left:35%;top:48%;">
+    <svg width="28" height="48" viewBox="0 0 28 48" fill="none" opacity="0.26">
+      <circle cx="14" cy="5" r="4" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="9" x2="14" y2="27" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="3" y2="21" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="25" y2="19" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="6" y2="44" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="22" y2="43" stroke="white" stroke-width="1.8"/>
+    </svg>
+  </div>
+  <div style="position:absolute;left:44%;top:55%;">
+    <svg width="28" height="48" viewBox="0 0 28 48" fill="none" opacity="0.3">
+      <circle cx="14" cy="5" r="4" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="9" x2="14" y2="27" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="3" y2="21" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="25" y2="19" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="6" y2="44" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="22" y2="43" stroke="white" stroke-width="1.8"/>
+    </svg>
+  </div>
+  <div style="position:absolute;left:39%;top:35%;">
+    <svg width="28" height="48" viewBox="0 0 28 48" fill="none" opacity="0.22">
+      <circle cx="14" cy="5" r="4" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="9" x2="14" y2="27" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="3" y2="21" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="25" y2="19" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="6" y2="44" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="22" y2="43" stroke="white" stroke-width="1.8"/>
+    </svg>
+  </div>
+  <div style="position:absolute;left:46%;top:32%;">
+    <svg width="28" height="48" viewBox="0 0 28 48" fill="none" opacity="0.26">
+      <circle cx="14" cy="5" r="4" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="9" x2="14" y2="27" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="3" y2="21" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="25" y2="19" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="6" y2="44" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="22" y2="43" stroke="white" stroke-width="1.8"/>
+    </svg>
+  </div>
+  <div style="position:absolute;left:42%;top:58%;">
+    <svg width="28" height="48" viewBox="0 0 28 48" fill="none" opacity="0.3">
+      <circle cx="14" cy="5" r="4" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="9" x2="14" y2="27" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="3" y2="21" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="25" y2="19" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="6" y2="44" stroke="white" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="22" y2="43" stroke="white" stroke-width="1.8"/>
+    </svg>
+  </div>
+  <div style="position:absolute;left:55%;top:42%; transform: scaleX(-1);">
+    <svg width="28" height="48" viewBox="0 0 28 48" fill="none" opacity="0.22">
+      <circle cx="14" cy="5" r="4" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="9" x2="14" y2="27" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="3" y2="21" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="25" y2="19" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="6" y2="44" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="22" y2="43" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+    </svg>
+  </div>
+  <div style="position:absolute;left:60%;top:38%; transform: scaleX(-1);">
+    <svg width="28" height="48" viewBox="0 0 28 48" fill="none" opacity="0.26">
+      <circle cx="14" cy="5" r="4" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="9" x2="14" y2="27" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="3" y2="21" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="25" y2="19" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="6" y2="44" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="22" y2="43" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+    </svg>
+  </div>
+  <div style="position:absolute;left:56%;top:48%; transform: scaleX(-1);">
+    <svg width="28" height="48" viewBox="0 0 28 48" fill="none" opacity="0.3">
+      <circle cx="14" cy="5" r="4" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="9" x2="14" y2="27" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="3" y2="21" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="25" y2="19" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="6" y2="44" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="22" y2="43" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+    </svg>
+  </div>
+  <div style="position:absolute;left:62%;top:52%; transform: scaleX(-1);">
+    <svg width="28" height="48" viewBox="0 0 28 48" fill="none" opacity="0.22">
+      <circle cx="14" cy="5" r="4" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="9" x2="14" y2="27" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="3" y2="21" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="25" y2="19" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="6" y2="44" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="22" y2="43" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+    </svg>
+  </div>
+  <div style="position:absolute;left:58%;top:35%; transform: scaleX(-1);">
+    <svg width="28" height="48" viewBox="0 0 28 48" fill="none" opacity="0.26">
+      <circle cx="14" cy="5" r="4" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="9" x2="14" y2="27" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="3" y2="21" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="25" y2="19" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="6" y2="44" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="22" y2="43" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+    </svg>
+  </div>
+  <div style="position:absolute;left:64%;top:44%; transform: scaleX(-1);">
+    <svg width="28" height="48" viewBox="0 0 28 48" fill="none" opacity="0.3">
+      <circle cx="14" cy="5" r="4" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="9" x2="14" y2="27" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="3" y2="21" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="25" y2="19" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="6" y2="44" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="22" y2="43" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+    </svg>
+  </div>
+  <div style="position:absolute;left:57%;top:56%; transform: scaleX(-1);">
+    <svg width="28" height="48" viewBox="0 0 28 48" fill="none" opacity="0.22">
+      <circle cx="14" cy="5" r="4" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="9" x2="14" y2="27" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="3" y2="21" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="25" y2="19" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="6" y2="44" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="22" y2="43" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+    </svg>
+  </div>
+  <div style="position:absolute;left:61%;top:32%; transform: scaleX(-1);">
+    <svg width="28" height="48" viewBox="0 0 28 48" fill="none" opacity="0.26">
+      <circle cx="14" cy="5" r="4" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="9" x2="14" y2="27" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="3" y2="21" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="25" y2="19" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="6" y2="44" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="22" y2="43" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+    </svg>
+  </div>
+  <div style="position:absolute;left:65%;top:48%; transform: scaleX(-1);">
+    <svg width="28" height="48" viewBox="0 0 28 48" fill="none" opacity="0.3">
+      <circle cx="14" cy="5" r="4" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="9" x2="14" y2="27" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="3" y2="21" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="15" x2="25" y2="19" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="6" y2="44" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+      <line x1="14" y1="27" x2="22" y2="43" stroke="rgba(130,190,255,1)" stroke-width="1.8"/>
+    </svg>
+  </div>
 </div>
 <!-- Football pitch lines -->
 <svg class="pitch-lines" viewBox="0 0 100 60" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
