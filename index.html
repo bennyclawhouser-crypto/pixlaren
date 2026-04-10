@@ -535,9 +535,7 @@
     </div>
   </div>
 
-  <div class="hint-wrap">
-    <div class="hint-text" id="hint-text" style="display:none"></div>
-  </div>
+
 
   <button class="attempt-btn" id="attempt-btn">
     FÖRSÖK (1)
@@ -1069,12 +1067,7 @@ function revealMore() {
   }
 
   // Show hint
-  const hintIdx = Math.floor((currentAttempt - 1) / 2);
-  if (hintIdx < currentPlayer.hints.length) {
-    const hintEl = document.getElementById('hint-text');
-    hintEl.style.display = 'block';
-    hintEl.textContent = '💡 ' + currentPlayer.hints[hintIdx];
-  }
+
 
   const nextAttempt = currentAttempt + 1;
   const MAX_ATTEMPTS = 5;
