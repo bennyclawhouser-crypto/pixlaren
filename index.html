@@ -502,6 +502,12 @@
       <button id="love-btn" onclick="startGame('love')" disabled style="opacity:0.4;background:#e91e8c;color:white;border:none;border-radius:14px;padding:20px 0;width:100%;font-family:'Arial Black',sans-serif;font-size:14px;letter-spacing:1px;cursor:pointer;box-shadow:0 6px 20px rgba(233,30,140,0.5);">LOVE IS BLIND</button>
     </div>
     <p class="instructions">Bilden avslöjas steg för steg. Ju färre försök — desto fler poäng!</p>
+
+    <!-- Highscore on start screen -->
+    <div style="width:100%;max-width:320px;background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.15);border-radius:14px;padding:16px;margin-top:4px;">
+      <div style="font-family:'Arial Black',sans-serif;font-size:11px;letter-spacing:2px;color:#F5C518;text-align:center;margin-bottom:10px;">🏆 TOPP 10</div>
+      <div id="start-hs-list" style="font-family:Arial,sans-serif;font-size:13px;color:rgba(255,255,255,0.7);text-align:center;">Laddar...</div>
+    </div>
   </div>
 </div>
 
@@ -995,7 +1001,7 @@ async function upsertRemoteScore(name, addScore) {
         body: JSON.stringify({ name, score: addScore, games: 1 })
       });
     }
-    await renderHighscores();
+    await renderAllHighscores();
   } catch(e) { console.error('upsert error', e); }
 }
 
@@ -1318,8 +1324,23 @@ function showHint() {
   if (hb) { hb.disabled = true; hb.style.opacity = '0.4'; hb.textContent = '-2p ANVÄND'; }
 }
 
-// Init highscores on load
-renderHighscores();
+// Init highscores on load — both panels
+async function renderAllHighscores() {
+  const scores = await fetchRemoteScores();
+  const rankIcon = i => i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i+1}.`;
+  const rankClass = i => i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+  const html = scores.length === 0
+    ? '<div style="color:rgba(255,255,255,0.3);font-style:italic;">Inga poäng än</div>'
+    : scores.map((s, i) => `<div class="hs-entry"><span class="hs-rank ${rankClass(i)}">${rankIcon(i)}</span><span class="hs-name">${s.name}</span><span class="hs-score">${s.score}</span></div>`).join('');
+
+  const list1 = document.getElementById('hs-list');
+  const list2 = document.getElementById('start-hs-list');
+  if (list1) list1.innerHTML = html;
+  if (list2) list2.innerHTML = html;
+}
+
+renderAllHighscores();
+setInterval(renderAllHighscores, 30000); // refresh every 30s
 
 // Single event listener for attempt button — checks mode each click
 document.getElementById('attempt-btn').addEventListener('click', function() {
