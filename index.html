@@ -442,11 +442,138 @@
       50% { border-color: var(--red); }
     }
     .wrong-flash { animation: wrongFlash 0.4s ease; }
+
+    /* ── Stickmen playing football ── */
+    .stickmen-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    @keyframes run {
+      0%   { transform: translateX(-120px); }
+      100% { transform: translateX(calc(100vw + 120px)); }
+    }
+    @keyframes runBack {
+      0%   { transform: translateX(calc(100vw + 120px)) scaleX(-1); }
+      100% { transform: translateX(-120px) scaleX(-1); }
+    }
+    @keyframes kick {
+      0%,80%,100% { transform: rotate(0deg); }
+      40%  { transform: rotate(-30deg); }
+    }
+    @keyframes bounce {
+      0%,100% { transform: translateY(0); }
+      50%     { transform: translateY(-18px); }
+    }
+    @keyframes ballRoll {
+      0%   { left: -20px; }
+      100% { left: calc(100vw + 20px); }
+    }
+    @keyframes ballRollBack {
+      0%   { left: calc(100vw + 20px); }
+      100% { left: -20px; }
+    }
+
+    .stick-runner {
+      position: absolute;
+      bottom: 12px;
+      animation: run linear infinite;
+    }
+    .stick-runner-2 {
+      position: absolute;
+      bottom: 28px;
+      animation: runBack linear infinite;
+    }
+    .stick-ball {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: white;
+      border: 2px solid rgba(0,0,0,0.4);
+      bottom: 10px;
+    }
+    .ball-1 { animation: ballRoll 6s linear infinite; }
+    .ball-2 { animation: ballRollBack 9s linear 1.5s infinite; }
+
   </style>
 </head>
 <body>
 
 <!-- START SCREEN -->
+
+<!-- Stickmen playing football -->
+<div class="stickmen-layer" aria-hidden="true">
+  <!-- Ball 1 -->
+  <div class="stick-ball ball-1"></div>
+  <!-- Ball 2 -->
+  <div class="stick-ball ball-2"></div>
+
+  <!-- Runner 1 -->
+  <div class="stick-runner" style="animation-duration:7s;animation-delay:0s;">
+    <svg width="40" height="60" viewBox="0 0 40 60" fill="none" xmlns="http://www.w3.org/2000/svg" opacity="0.25">
+      <circle cx="20" cy="8" r="6" stroke="white" stroke-width="2"/>
+      <line x1="20" y1="14" x2="20" y2="35" stroke="white" stroke-width="2"/>
+      <line x1="20" y1="20" x2="8" y2="28" stroke="white" stroke-width="2"/>
+      <line x1="20" y1="20" x2="32" y2="15" stroke="white" stroke-width="2"/>
+      <line x1="20" y1="35" x2="10" y2="52" stroke="white" stroke-width="2"/>
+      <line x1="20" y1="35" x2="30" y2="48" stroke="white" stroke-width="2"/>
+    </svg>
+  </div>
+
+  <!-- Runner 2 (opposite direction) -->
+  <div class="stick-runner-2" style="animation-duration:9s;animation-delay:2s;">
+    <svg width="40" height="60" viewBox="0 0 40 60" fill="none" xmlns="http://www.w3.org/2000/svg" opacity="0.2">
+      <circle cx="20" cy="8" r="6" stroke="white" stroke-width="2"/>
+      <line x1="20" y1="14" x2="20" y2="35" stroke="white" stroke-width="2"/>
+      <line x1="20" y1="22" x2="6" y2="18" stroke="white" stroke-width="2"/>
+      <line x1="20" y1="22" x2="34" y2="28" stroke="white" stroke-width="2"/>
+      <line x1="20" y1="35" x2="12" y2="55" stroke="white" stroke-width="2"/>
+      <line x1="20" y1="35" x2="28" y2="50" stroke="white" stroke-width="2"/>
+    </svg>
+  </div>
+
+  <!-- Runner 3 slower -->
+  <div class="stick-runner" style="animation-duration:12s;animation-delay:4s;bottom:20px;">
+    <svg width="36" height="54" viewBox="0 0 40 60" fill="none" xmlns="http://www.w3.org/2000/svg" opacity="0.18">
+      <circle cx="20" cy="8" r="6" stroke="white" stroke-width="2"/>
+      <line x1="20" y1="14" x2="20" y2="35" stroke="white" stroke-width="2"/>
+      <line x1="20" y1="20" x2="5" y2="25" stroke="white" stroke-width="2"/>
+      <line x1="20" y1="20" x2="35" y2="22" stroke="white" stroke-width="2"/>
+      <line x1="20" y1="35" x2="8" y2="54" stroke="white" stroke-width="2"/>
+      <line x1="20" y1="35" x2="32" y2="52" stroke="white" stroke-width="2"/>
+    </svg>
+  </div>
+
+  <!-- Kicker (stationary, kicks) -->
+  <div style="position:absolute;bottom:8px;left:15%;opacity:0.22;">
+    <svg width="44" height="64" viewBox="0 0 44 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="22" cy="8" r="6" stroke="white" stroke-width="2"/>
+      <line x1="22" y1="14" x2="22" y2="36" stroke="white" stroke-width="2"/>
+      <line x1="22" y1="20" x2="8" y2="28" stroke="white" stroke-width="2"/>
+      <line x1="22" y1="20" x2="36" y2="18" stroke="white" stroke-width="2"/>
+      <line x1="22" y1="36" x2="10" y2="56" stroke="white" stroke-width="2"/>
+      <!-- Kicking leg -->
+      <line x1="22" y1="36" x2="40" y2="28" stroke="white" stroke-width="2" style="transform-origin:22px 36px;animation:kick 1.2s ease-in-out infinite;"/>
+    </svg>
+  </div>
+
+  <!-- Goalkeeper (stationary, arms wide) -->
+  <div style="position:absolute;bottom:8px;right:10%;opacity:0.2;">
+    <svg width="50" height="60" viewBox="0 0 50 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="25" cy="8" r="6" stroke="white" stroke-width="2"/>
+      <line x1="25" y1="14" x2="25" y2="36" stroke="white" stroke-width="2"/>
+      <line x1="25" y1="20" x2="2" y2="14" stroke="white" stroke-width="2"/>
+      <line x1="25" y1="20" x2="48" y2="14" stroke="white" stroke-width="2"/>
+      <line x1="25" y1="36" x2="14" y2="56" stroke="white" stroke-width="2"/>
+      <line x1="25" y1="36" x2="36" y2="56" stroke="white" stroke-width="2"/>
+    </svg>
+  </div>
+</div>
+
 <!-- Football pitch lines -->
 <svg class="pitch-lines" viewBox="0 0 100 60" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
   <rect x="3" y="3" width="94" height="54" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="0.7"/>
