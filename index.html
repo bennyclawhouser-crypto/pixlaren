@@ -12,18 +12,64 @@
       --red-dark: #9e0b22;
       --blue: #005B9E;
       --gold: #F5C518;
-      --bg: #0d1117;
+      --pitch-dark: #2d7a1f;
+      --pitch-light: #35901f;
+      --pitch-stripe: #308a1c;
+      --line: rgba(255,255,255,0.75);
+      --bg: #1a4a0e;
     }
 
     html, body {
       min-height: 100vh;
-      background: var(--bg);
+      background: var(--pitch-dark);
       font-family: 'Arial Black', 'Impact', sans-serif;
       color: white;
       overflow-x: hidden;
       touch-action: manipulation;
     }
 
+    /* Pitch stripe pattern */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        180deg,
+        var(--pitch-dark) 0px,
+        var(--pitch-dark) 60px,
+        var(--pitch-stripe) 60px,
+        var(--pitch-stripe) 120px
+      );
+      z-index: -1;
+    }
+
+
+    /* Pitch lines on start screen */
+    #start-screen::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size: 100% 50%, 100% 50%;
+      background-position: center center, center center;
+      opacity: 0.06;
+      z-index: 0;
+      pointer-events: none;
+    }
+    /* Center circle on start */
+    #start-screen::after {
+      content: '';
+      position: absolute;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.08);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+      pointer-events: none;
+    }
     /* ── START SCREEN ── */
     #start-screen {
       min-height: 100vh;
@@ -39,9 +85,7 @@
     .djurgardenBg {
       position: absolute;
       inset: 0;
-      background:
-        radial-gradient(ellipse at center, rgba(0,91,158,0.35) 0%, transparent 70%),
-        var(--bg);
+      background: transparent;
       z-index: 0;
     }
 
@@ -71,7 +115,7 @@
       font-size: clamp(52px, 14vw, 96px);
       letter-spacing: 8px;
       color: white;
-      text-shadow: 0 0 40px rgba(200,16,46,0.8), 0 4px 0 rgba(0,0,0,0.5);
+      text-shadow: 0 0 40px rgba(255,255,255,0.4), 0 4px 0 rgba(0,0,0,0.6), 0 0 80px rgba(200,230,100,0.3);
       line-height: 1;
     }
 
@@ -88,8 +132,8 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      background: rgba(0,91,158,0.3);
-      border: 1px solid rgba(0,91,158,0.5);
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.25);
       padding: 8px 20px;
       border-radius: 40px;
     }
@@ -245,8 +289,8 @@
     .highscore-panel {
       width: 130px;
       flex-shrink: 0;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.2);
       border-radius: 12px;
       padding: 12px 10px;
       display: flex;
@@ -325,8 +369,8 @@
       min-height: 44px;
     }
     .hint-text {
-      background: rgba(0,91,158,0.4);
-      border: 1px solid rgba(0,91,158,0.6);
+      background: rgba(0,0,0,0.45);
+      border: 1px solid rgba(255,255,255,0.2);
       border-radius: 8px;
       padding: 10px 16px;
       font-family: Arial, sans-serif;
@@ -371,8 +415,8 @@
       text-transform: uppercase;
     }
     .guess-input {
-      background: rgba(255,255,255,0.08);
-      border: 1.5px solid rgba(255,255,255,0.15);
+      background: rgba(0,0,0,0.4);
+      border: 1.5px solid rgba(255,255,255,0.25);
       border-radius: 10px;
       padding: 14px 16px;
       color: white;
@@ -488,7 +532,7 @@
     <!-- Name + Start row -->
     <div style="display:flex;align-items:center;gap:10px;width:100%;max-width:340px;">
       <input id="player-name-input" type="text" maxlength="14" placeholder="Ditt namn"
-        style="flex:1;background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.25);border-radius:10px;padding:14px 14px;color:white;font-size:16px;font-family:Arial,sans-serif;outline:none;text-align:center;"
+        style="flex:1;background:rgba(0,0,0,0.4);border:2px solid rgba(255,255,255,0.3);border-radius:10px;padding:14px 14px;color:white;font-size:16px;font-family:Arial,sans-serif;outline:none;text-align:center;"
         oninput="document.getElementById('start-btn').disabled = this.value.trim().length === 0; document.getElementById('start-btn').style.opacity = this.value.trim().length === 0 ? '0.4' : '1';"
         onkeydown="if(event.key==='Enter' && this.value.trim()) startGame()" />
       <button id="start-btn" class="start-btn" onclick="startGame()" disabled style="white-space:nowrap;flex-shrink:0;opacity:0.4;">STARTA</button>
@@ -523,7 +567,7 @@
         <div style="font-size:8px;letter-spacing:1.5px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:4px;">Spelare</div>
         <input id="ingame-name" type="text" maxlength="12" placeholder="Ditt namn"
           value=""
-          style="width:100%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:6px 8px;color:white;font-size:12px;font-family:Arial,sans-serif;outline:none;text-align:center;"
+          style="width:100%;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.25);border-radius:6px;padding:6px 8px;color:white;font-size:12px;font-family:Arial,sans-serif;outline:none;text-align:center;"
           oninput="playerName = this.value.trim() || 'Anonym'" />
       </div>
       <div class="hs-title" style="margin-bottom:6px;">🏆 TOPP 10</div>
