@@ -222,6 +222,36 @@
       z-index: 1;
     }
 
+
+    /* Game screen fullscreen */
+    #game-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      background: #1a4a0e;
+      overflow-y: auto;
+      padding: 12px 12px 80px;
+    }
+
+    /* Image takes full width in game */
+    .game-row {
+      width: 100%;
+      max-width: 100%;
+      flex-direction: column;
+    }
+    .game-row .img-wrapper {
+      width: 100%;
+      max-width: 100%;
+    }
+    .img-container {
+      max-width: 100% !important;
+      width: 100% !important;
+    }
+    .highscore-panel {
+      width: 100%;
+      margin-top: 12px;
+    }
+
     /* Game layout row: image + highscore side by side */
     .game-row {
       width: 100%;
