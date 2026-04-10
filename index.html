@@ -492,9 +492,10 @@
     <div style="display:flex;align-items:center;gap:10px;width:100%;max-width:380px;">
       <input id="player-name-input" type="text" maxlength="14" placeholder="Ditt namn"
         style="flex:1;background:rgba(0,0,0,0.4);border:2px solid rgba(255,255,255,0.3);border-radius:10px;padding:14px 14px;color:white;font-size:16px;font-family:Arial,sans-serif;outline:none;text-align:center;"
-        oninput="const v=this.value.trim().length>0; ['start-btn','brawl-btn'].forEach(id=>{const b=document.getElementById(id);b.disabled=!v;b.style.opacity=v?'1':'0.4'});"
+        oninput="const v=this.value.trim().length>0; ['start-btn','brawl-btn','love-btn'].forEach(id=>{const b=document.getElementById(id);if(b){b.disabled=!v;b.style.opacity=v?'1':'0.4'}});"
         onkeydown="if(event.key==='Enter' && this.value.trim()) startGame('football')" />
       <button id="start-btn" class="start-btn" onclick="startGame('football')" disabled style="white-space:nowrap;flex-shrink:0;opacity:0.4;">FOTBOLL</button>
+      <button id="love-btn" onclick="startGame('love')" disabled style="white-space:nowrap;flex-shrink:0;opacity:0.4;background:#e91e8c;color:white;border:none;border-radius:12px;padding:22px 16px;font-family:'Arial Black',sans-serif;font-size:clamp(14px,3.5vw,20px);letter-spacing:2px;cursor:pointer;box-shadow:0 8px 32px rgba(233,30,140,0.5);">LOVE</button>
       <button id="brawl-btn" onclick="startGame('brawl')" disabled style="white-space:nowrap;flex-shrink:0;opacity:0.4;background:#a855f7;color:white;border:none;border-radius:12px;padding:22px 20px;font-family:'Arial Black',sans-serif;font-size:clamp(16px,4vw,22px);letter-spacing:2px;cursor:pointer;box-shadow:0 8px 32px rgba(168,85,247,0.6);">BRAWL</button>
     </div>
     <p class="instructions">Bilden avslöjas steg för steg. Ju färre försök — desto fler poäng!</p>
@@ -793,6 +794,32 @@ const PLAYERS = [
 
 // Pixel sizes: from very blocky to clear
 
+
+// ── Love is Blind characters ─────────────────────────────────────────────────
+const LOVE_PLAYERS = [
+  { name: "Lauren Speed",       imageUrl: "love/lauren.jpg",    hints: ["Säsong 1", "Gifte sig i serien", "Paret håller ihop"] },
+  { name: "Cameron Hamilton",   imageUrl: "love/cameron.jpg",   hints: ["Säsong 1", "Gifte sig i serien", "Paret håller ihop"] },
+  { name: "Amber Pike",         imageUrl: "love/amber.jpg",     hints: ["Säsong 1", "Gifte sig i serien", "Tatuerad och äventyrlig"] },
+  { name: "Giannina Gibelli",   imageUrl: "love/giannina.jpg",  hints: ["Säsong 1", "Svarade nej vid altaret", "Kolumbianskt ursprung"] },
+  { name: "Damian Powers",      imageUrl: "love/damian.jpg",    hints: ["Säsong 1", "Fick nej vid altaret", "Festlig personlighet"] },
+  { name: "Jessica Batten",     imageUrl: "love/jessica.jpg",   hints: ["Säsong 1", "Svarade nej vid altaret", "Tvivlade länge"] },
+  { name: "Mark Cuevas",        imageUrl: "love/mark.jpg",      hints: ["Säsong 1", "Fick nej vid altaret", "Yngre deltagare"] },
+  { name: "Danielle Ruhl",      imageUrl: "love/danielle.jpg",  hints: ["Säsong 2", "Gifte sig i serien", "Paret skilde sig senare"] },
+  { name: "Nick Thompson",      imageUrl: "love/nick_t.jpg",    hints: ["Säsong 2", "Gifte sig i serien", "Paret skilde sig senare"] },
+  { name: "Natalie Lee",        imageUrl: "love/natalie.jpg",   hints: ["Säsong 2", "Svarade nej vid altaret", "Asiatiskt ursprung"] },
+  { name: "Shayne Jansen",      imageUrl: "love/shayne.jpg",    hints: ["Säsong 2", "Fick nej vid altaret", "Omtyckt av många"] },
+  { name: "Deepti Vempati",     imageUrl: "love/deepti.jpg",    hints: ["Säsong 2", "Svarade nej vid altaret", "Indiskt ursprung"] },
+  { name: "Vanessa Lachey",     imageUrl: "love/vanessa_l.jpg", hints: ["Programledare", "Gift med sin medprogramledare", "Kändis i egen rätt"] },
+  { name: "Nick Lachey",        imageUrl: "love/nick_l.jpg",    hints: ["Programledare", "Fd boyband-sångare", "Gift med sin medprogramledare"] },
+  { name: "Chelsea Griffin",    imageUrl: "love/chelsea.jpg",   hints: ["Säsong 6", "Jämfördes med Megan Fox", "Kontroversiell deltagare"] },
+  { name: "Zack Goytowski",     imageUrl: "love/zack.jpg",      hints: ["Säsong 5", "Gifte sig i serien", "Advokatbakgrund"] },
+  { name: "Bliss Poureetezadi", imageUrl: "love/bliss.jpg",     hints: ["Säsong 6", "Gifte sig i serien", "Stark karaktär"] },
+  { name: "Raven Ross",         imageUrl: "love/raven.jpg",     hints: ["Säsong 3", "Svarade ja vid altaret", "Fitness-influencer"] },
+  { name: "SK Alagbada",        imageUrl: "love/sk.jpg",        hints: ["Säsong 3", "Nigeriaanskt ursprung", "Otrohet-skandal"] },
+  { name: "Bartise Bowden",     imageUrl: "love/bartise.jpg",   hints: ["Säsong 3", "Svarade nej vid altaret", "Omstridd personlighet"] },
+  { name: "Nancy Rodriguez",    imageUrl: "love/nancy.jpg",     hints: ["Säsong 3", "Fick nej vid altaret", "Latinskamerikanskt ursprung"] },
+];
+
 // ── Brawl Stars characters ────────────────────────────────────────────────────
 const BRAWL_PLAYERS = [
   { name: "Shelly",    imageUrl: "brawl/shelly.png",    hints: ["Sheriffens dotter", "Standardvapen: hagelgevär", "Superskott sprider hagel"] },
@@ -993,7 +1020,7 @@ async function renderHighscores() {
 
 function pickPlayer() {
   // Filter out the last min(3, total-1) played players
-  const activeList = gameMode === 'brawl' ? BRAWL_PLAYERS : PLAYERS;
+  const activeList = gameMode === 'brawl' ? BRAWL_PLAYERS : gameMode === 'love' ? LOVE_PLAYERS : PLAYERS;
   const maxRecent = Math.min(3, activeList.length - 1);
   const available = activeList.filter(p => !recentPlayers.slice(-maxRecent).includes(p.name));
   const pool = available.length > 0 ? available : activeList;
@@ -1275,7 +1302,7 @@ function showResult(won, score) {
 let hintPenalty = 0; // accumulated penalty for this round
 
 function showHint() {
-  if (hintUsed || !currentPlayer) return;
+  if (hintUsed || !currentPlayer || gameMode === 'love') return;
   hintUsed = true;
   hintPenalty = 2; // -2 points if hint used
   const hints = currentPlayer.hints || [];
