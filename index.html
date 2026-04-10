@@ -492,13 +492,14 @@
     <div style="width:100%;max-width:320px;">
       <input id="player-name-input" type="text" maxlength="14" placeholder="Ditt namn..."
         style="width:100%;background:rgba(0,0,0,0.4);border:2px solid rgba(255,255,255,0.3);border-radius:12px;padding:16px 16px;color:white;font-size:18px;font-family:Arial,sans-serif;outline:none;text-align:center;"
-        oninput="const v=this.value.trim().length>0; ['start-btn','brawl-btn','love-btn'].forEach(id=>{const b=document.getElementById(id);if(b){b.disabled=!v;b.style.opacity=v?'1':'0.4'}});"
+        oninput="const v=this.value.trim().length>0; ['start-btn','brawl-btn','love-btn','flags-btn'].forEach(id=>{const b=document.getElementById(id);if(b){b.disabled=!v;b.style.opacity=v?'1':'0.4'}});"
         onkeydown="if(event.key==='Enter' && this.value.trim()) startGame('football')" />
     </div>
     <!-- Mode buttons — equal size, centered -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;max-width:320px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;width:100%;max-width:320px;margin:0 auto;">
       <button id="start-btn" onclick="startGame('football')" disabled style="opacity:0.4;background:#C8102E;color:white;border:none;border-radius:14px;padding:20px 0;width:100%;font-family:'Arial Black',sans-serif;font-size:14px;letter-spacing:1px;cursor:pointer;box-shadow:0 6px 20px rgba(200,16,46,0.5);">FOTBOLL</button>
       <button id="brawl-btn" onclick="startGame('brawl')" disabled style="opacity:0.4;background:#a855f7;color:white;border:none;border-radius:14px;padding:20px 0;width:100%;font-family:'Arial Black',sans-serif;font-size:14px;letter-spacing:1px;cursor:pointer;box-shadow:0 6px 20px rgba(168,85,247,0.5);">BRAWL</button>
+      <button id="flags-btn" onclick="startGame('flags')" disabled style="opacity:0.4;background:#1565C0;color:white;border:none;border-radius:14px;padding:20px 0;width:100%;font-family:'Arial Black',sans-serif;font-size:12px;letter-spacing:1px;cursor:pointer;box-shadow:0 6px 20px rgba(21,101,192,0.5);">FLAGGOR</button>
       <button id="love-btn" onclick="startGame('love')" disabled style="opacity:0.4;background:#e91e8c;color:white;border:none;border-radius:14px;padding:20px 0;width:100%;font-family:'Arial Black',sans-serif;font-size:14px;letter-spacing:1px;cursor:pointer;box-shadow:0 6px 20px rgba(233,30,140,0.5);">LOVE IS BLIND</button>
     </div>
     <p class="instructions">Bilden avslöjas steg för steg. Ju färre försök — desto fler poäng!</p>
@@ -829,6 +830,61 @@ const LOVE_PLAYERS = [
   { name: "Nancy Rodriguez",    imageUrl: "love/nancy.jpg",     hints: ["Säsong 3", "Fick nej vid altaret", "Latinskamerikanskt ursprung"] },
 ];
 
+
+// ── Countries/Flags ───────────────────────────────────────────────────────────
+const FLAG_PLAYERS = [
+  { name: "Sverige",        imageUrl: "flags/se.png", hints: ["Skandinavien", "Nordeuropa"] },
+  { name: "Norge",          imageUrl: "flags/no.png", hints: ["Skandinavien", "Nordeuropa"] },
+  { name: "Danmark",        imageUrl: "flags/dk.png", hints: ["Skandinavien", "Nordeuropa"] },
+  { name: "Finland",        imageUrl: "flags/fi.png", hints: ["Skandinavien", "Nordeuropa"] },
+  { name: "Tyskland",       imageUrl: "flags/de.png", hints: ["Centraleuropa", "Stor ekonomi"] },
+  { name: "Frankrike",      imageUrl: "flags/fr.png", hints: ["Västeuropa", "Trikolorn"] },
+  { name: "Spanien",        imageUrl: "flags/es.png", hints: ["Sydeuropa", "Iberiska halvön"] },
+  { name: "Italien",        imageUrl: "flags/it.png", hints: ["Sydeuropa", "Stövelformad"] },
+  { name: "Portugal",       imageUrl: "flags/pt.png", hints: ["Sydvästeuropa", "Iberiska halvön"] },
+  { name: "Nederländerna",  imageUrl: "flags/nl.png", hints: ["Västeuropa", "Känd för tulpaner"] },
+  { name: "Belgien",        imageUrl: "flags/be.png", hints: ["Västeuropa", "Tre vertikala band"] },
+  { name: "Schweiz",        imageUrl: "flags/ch.png", hints: ["Centraleuropa", "Kvadratisk flagga"] },
+  { name: "Österrike",      imageUrl: "flags/at.png", hints: ["Centraleuropa", "Rött-vitt-rött"] },
+  { name: "Polen",          imageUrl: "flags/pl.png", hints: ["Östeuropa", "Vitt och rött"] },
+  { name: "Tjeckien",       imageUrl: "flags/cz.png", hints: ["Östeuropa", "Blå triangel"] },
+  { name: "Ungern",         imageUrl: "flags/hu.png", hints: ["Östeuropa", "Tre horisontella band"] },
+  { name: "USA",            imageUrl: "flags/us.png", hints: ["Nordamerika", "Stjärnor och ränder"] },
+  { name: "Kanada",         imageUrl: "flags/ca.png", hints: ["Nordamerika", "Lönnlöv"] },
+  { name: "Mexiko",         imageUrl: "flags/mx.png", hints: ["Nordamerika", "Örn i mitten"] },
+  { name: "Brasilien",      imageUrl: "flags/br.png", hints: ["Sydamerika", "Grön och gul"] },
+  { name: "Argentina",      imageUrl: "flags/ar.png", hints: ["Sydamerika", "Ljusblå och vit"] },
+  { name: "Colombia",       imageUrl: "flags/co.png", hints: ["Sydamerika", "Gult, blått, rött"] },
+  { name: "Chile",          imageUrl: "flags/cl.png", hints: ["Sydamerika", "Stjärna i rött fält"] },
+  { name: "Japan",          imageUrl: "flags/jp.png", hints: ["Asien", "Röd cirkel på vitt"] },
+  { name: "Kina",           imageUrl: "flags/cn.png", hints: ["Asien", "Röd med gula stjärnor"] },
+  { name: "Sydkorea",       imageUrl: "flags/kr.png", hints: ["Asien", "Taegeuk-symbol"] },
+  { name: "Indien",         imageUrl: "flags/in.png", hints: ["Sydasien", "Orange, vitt, grönt"] },
+  { name: "Indonesien",     imageUrl: "flags/id.png", hints: ["Sydostasien", "Rött och vitt"] },
+  { name: "Thailand",       imageUrl: "flags/th.png", hints: ["Sydostasien", "Blå, röd, vit"] },
+  { name: "Turkiet",        imageUrl: "flags/tr.png", hints: ["Mellanöstern/Europa", "Halvmåne och stjärna"] },
+  { name: "Ryssland",       imageUrl: "flags/ru.png", hints: ["Östeuropa/Asien", "Vitt, blått, rött"] },
+  { name: "Ukraina",        imageUrl: "flags/ua.png", hints: ["Östeuropa", "Blått och gult"] },
+  { name: "Egypten",        imageUrl: "flags/eg.png", hints: ["Afrika/Nordafrika", "Örn i mitten"] },
+  { name: "Marocko",        imageUrl: "flags/ma.png", hints: ["Nordafrika", "Röd med grön stjärna"] },
+  { name: "Nigeria",        imageUrl: "flags/ng.png", hints: ["Västafrika", "Grönt och vitt"] },
+  { name: "Sydafrika",      imageUrl: "flags/za.png", hints: ["Södra Afrika", "Många färger"] },
+  { name: "Australien",     imageUrl: "flags/au.png", hints: ["Oceanien", "Union Jack + stjärnor"] },
+  { name: "Nya Zeeland",    imageUrl: "flags/nz.png", hints: ["Oceanien", "Södra korset"] },
+  { name: "Storbritannien", imageUrl: "flags/gb.png", hints: ["Västeuropa", "Union Jack"] },
+  { name: "Irland",         imageUrl: "flags/ie.png", hints: ["Västeuropa", "Grön, vit, orange"] },
+  { name: "Grekland",       imageUrl: "flags/gr.png", hints: ["Sydeuropa", "Blå och vit med kors"] },
+  { name: "Rumänien",       imageUrl: "flags/ro.png", hints: ["Östeuropa", "Blå, gul, röd vertikalt"] },
+  { name: "Serbien",        imageUrl: "flags/rs.png", hints: ["Balkan", "Röd, blå, vit"] },
+  { name: "Kroatien",       imageUrl: "flags/hr.png", hints: ["Balkan", "Schackmönster på skölden"] },
+  { name: "Island",         imageUrl: "flags/is.png", hints: ["Nordatlanten", "Nordisk kors"] },
+  { name: "Israel",         imageUrl: "flags/il.png", hints: ["Mellanöstern", "Davidsstjärna"] },
+  { name: "Peru",           imageUrl: "flags/pe.png", hints: ["Sydamerika", "Rött och vitt"] },
+  { name: "Vietnam",        imageUrl: "flags/vn.png", hints: ["Sydostasien", "Gul stjärna på rött"] },
+  { name: "Kenya",          imageUrl: "flags/ke.png", hints: ["Östafrika", "Maasai-sköld"] },
+  { name: "Etiopien",       imageUrl: "flags/et.png", hints: ["Östafrika", "Grön, gul, röd med sol"] },
+];
+
 // ── Brawl Stars characters ────────────────────────────────────────────────────
 const BRAWL_PLAYERS = [
   { name: "Shelly",    imageUrl: "brawl/shelly.png",    hints: ["Sheriffens dotter", "Standardvapen: hagelgevär", "Superskott sprider hagel"] },
@@ -1029,7 +1085,7 @@ async function renderHighscores() {
 
 function pickPlayer() {
   // Filter out the last min(3, total-1) played players
-  const activeList = gameMode === 'brawl' ? BRAWL_PLAYERS : gameMode === 'love' ? LOVE_PLAYERS : PLAYERS;
+  const activeList = gameMode === 'brawl' ? BRAWL_PLAYERS : gameMode === 'love' ? LOVE_PLAYERS : gameMode === 'flags' ? FLAG_PLAYERS : PLAYERS;
   const maxRecent = Math.min(3, activeList.length - 1);
   const available = activeList.filter(p => !recentPlayers.slice(-maxRecent).includes(p.name));
   const pool = available.length > 0 ? available : activeList;
@@ -1092,7 +1148,7 @@ function startGame(mode = 'football') {
   const ingameField = document.getElementById('ingame-name');
   if (ingameField) ingameField.value = playerName === 'Anonym' ? '' : playerName;
   const hintBtn = document.getElementById('hint-btn');
-  if (hintBtn) hintBtn.style.display = mode === 'love' ? 'none' : '';
+  if (hintBtn) hintBtn.style.display = (mode === 'love') ? 'none' : '';
   resetGame(false);
 }
 
