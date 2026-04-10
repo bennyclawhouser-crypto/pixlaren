@@ -1177,6 +1177,7 @@ function resetGame(showStart = true) {
   if (hb) { hb.disabled = false; hb.style.opacity = '1'; hb.textContent = 'LEDTRÅD'; }
   hintUsed = false;
   hintPenalty = 0;
+  wrongGuessPenalty = 0;
 
   currentPlayer = pickPlayer();
 
@@ -1303,17 +1304,18 @@ function checkGuess() {
     // Base score: 10 - 2 per attempt. Multiplied by difficulty (1=×0.5, 5=×1, 10=×2)
     const diffMultiplier = Math.round((0.5 + (currentDifficulty - 1) * (1.5 / 9)) * 10) / 10;
     const baseScore = Math.max(10 - currentAttempt * 2, 1);
-    const score = Math.max(Math.round(baseScore * diffMultiplier) - hintPenalty, 1);
+    const score = Math.max(Math.round(baseScore * diffMultiplier) - hintPenalty - wrongGuessPenalty, 1);
     applyPixelation(1);
     sessionScore += score;
     saveHighscore(playerName, score, currentAttempt + 1);
     showResult(true, score);
   } else {
+    wrongGuessPenalty++;
     input.classList.add('wrong-flash');
     setTimeout(() => input.classList.remove('wrong-flash'), 400);
     input.value = '';
-    input.placeholder = 'Fel! Försök igen...';
-    setTimeout(() => input.placeholder = 'Skriv spelarens namn...', 1500);
+    input.placeholder = `Fel! -1p (${wrongGuessPenalty}p straff hittills)`;
+    setTimeout(() => input.placeholder = 'Skriv spelarens namn...', 1800);
   }
 }
 
@@ -1367,6 +1369,7 @@ function showResult(won, score) {
 }
 
 let hintPenalty = 0; // accumulated penalty for this round
+let wrongGuessPenalty = 0; // -1 per wrong guess
 
 function showHint() {
   if (hintUsed || !currentPlayer || gameMode === 'love') return;
