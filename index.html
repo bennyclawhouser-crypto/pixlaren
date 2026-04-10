@@ -495,7 +495,7 @@
         oninput="const v=this.value.trim().length>0; ['start-btn','brawl-btn'].forEach(id=>{const b=document.getElementById(id);b.disabled=!v;b.style.opacity=v?'1':'0.4'});"
         onkeydown="if(event.key==='Enter' && this.value.trim()) startGame('football')" />
       <button id="start-btn" class="start-btn" onclick="startGame('football')" disabled style="white-space:nowrap;flex-shrink:0;opacity:0.4;">FOTBOLL</button>
-      <button id="brawl-btn" onclick="startGame('brawl')" disabled style="white-space:nowrap;flex-shrink:0;opacity:0.4;background:#a855f7;color:white;border:none;border-radius:10px;padding:14px 16px;font-family:'Arial Black',sans-serif;font-size:16px;letter-spacing:1px;cursor:pointer;box-shadow:0 4px 20px rgba(168,85,247,0.5);">BRAWL</button>
+      <button id="brawl-btn" onclick="startGame('brawl')" disabled style="white-space:nowrap;flex-shrink:0;opacity:0.4;background:#a855f7;color:white;border:none;border-radius:12px;padding:22px 20px;font-family:'Arial Black',sans-serif;font-size:clamp(16px,4vw,22px);letter-spacing:2px;cursor:pointer;box-shadow:0 8px 32px rgba(168,85,247,0.6);">BRAWL</button>
     </div>
     <p class="instructions">Bilden avslöjas steg för steg. Ju färre försök — desto fler poäng!</p>
   </div>
