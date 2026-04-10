@@ -859,36 +859,59 @@ let roundNumber = 0;
 const MAX_ROUNDS = 10;
 let sessionScore = 0;
 
-// ── Highscore ──────────────────────────────────────────────────────────────
-const HS_KEY = 'pixlaren_highscores';
-function loadHighscores() {
-  try { return JSON.parse(localStorage.getItem(HS_KEY)) || []; } catch { return []; }
+
+// ── Supabase highscore ────────────────────────────────────────────────────────
+const SB_URL = 'https://lrkrqgxlbozgtdtczdoe.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxya3JxZ3hsYm96Z3RkdGN6ZG9lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2NjU2NjAsImV4cCI6MjA4OTI0MTY2MH0.PFmfL7D1DHDh9mjKoNEDxWaPJ4xxPbZDyPmuN3Wpgp8';
+
+async function fetchRemoteScores() {
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/pixlaren_scores?select=name,score,games&order=score.desc&limit=10`, {
+      headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` }
+    });
+    return await res.json();
+  } catch { return []; }
 }
-function saveHighscore(name, score, attempts) {
-  const scores = loadHighscores();
-  // Find existing entry with same name (case-insensitive)
-  const existing = scores.find(s => s.name.toLowerCase() === name.toLowerCase());
-  if (existing) {
-    existing.score += score;
-    existing.games = (existing.games || 1) + 1;
-  } else {
-    scores.push({ name, score, games: 1 });
-  }
-  scores.sort((a, b) => b.score - a.score);
-  const top10 = scores.slice(0, 10);
-  localStorage.setItem(HS_KEY, JSON.stringify(top10));
-  renderHighscores();
+
+async function upsertRemoteScore(name, addScore) {
+  try {
+    // Check if exists
+    const res = await fetch(`${SB_URL}/rest/v1/pixlaren_scores?name=eq.${encodeURIComponent(name)}&select=id,score,games`, {
+      headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` }
+    });
+    const existing = await res.json();
+    if (existing.length > 0) {
+      const row = existing[0];
+      await fetch(`${SB_URL}/rest/v1/pixlaren_scores?id=eq.${row.id}`, {
+        method: 'PATCH',
+        headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+        body: JSON.stringify({ score: row.score + addScore, games: row.games + 1, updated_at: new Date().toISOString() })
+      });
+    } else {
+      await fetch(`${SB_URL}/rest/v1/pixlaren_scores`, {
+        method: 'POST',
+        headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+        body: JSON.stringify({ name, score: addScore, games: 1 })
+      });
+    }
+    await renderHighscores();
+  } catch(e) { console.error('upsert error', e); }
 }
-function renderHighscores() {
-  const scores = loadHighscores();
+
+function saveHighscore(name, score) {
+  upsertRemoteScore(name, score);
+}
+
+async function renderHighscores() {
+  const scores = await fetchRemoteScores();
   const list = document.getElementById('hs-list');
   if (!list) return;
-  if (scores.length === 0) {
+  if (!scores.length) {
     list.innerHTML = '<div class="hs-empty">Inga poäng än</div>';
     return;
   }
+  const rankIcon = i => i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i+1}.`;
   const rankClass = i => i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
-  const rankIcon  = i => i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i+1}.`;
   list.innerHTML = scores.map((s, i) => `
     <div class="hs-entry">
       <span class="hs-rank ${rankClass(i)}">${rankIcon(i)}</span>
