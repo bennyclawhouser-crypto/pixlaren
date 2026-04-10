@@ -1162,7 +1162,20 @@ function checkGuess() {
 function revealAnswer() {
   gameOver = true;
   applyPixelation(1);
-  showResult(false, 0);
+  // Don't show result overlay — just briefly show answer then move on
+  const overlay = document.getElementById('result-overlay');
+  const emoji = document.getElementById('result-emoji');
+  const title = document.getElementById('result-title');
+  const answer = document.getElementById('result-answer');
+  const scoreEl = document.getElementById('result-score');
+  const btn = document.querySelector('.play-again-btn');
+  emoji.textContent = '😅';
+  title.className = 'result-title lose';
+  title.textContent = 'SVARET ÄR...';
+  answer.textContent = currentPlayer.name;
+  scoreEl.textContent = `Bild ${roundNumber}/${MAX_ROUNDS}`;
+  if (btn) btn.textContent = roundNumber >= MAX_ROUNDS ? 'SE RESULTAT' : 'NÄSTA';
+  overlay.classList.add('show');
 }
 
 function showResult(won, score) {
