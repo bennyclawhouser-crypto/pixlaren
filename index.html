@@ -489,12 +489,13 @@
     </div>
 
     <!-- Name + Start row -->
-    <div style="display:flex;align-items:center;gap:10px;width:100%;max-width:340px;">
+    <div style="display:flex;align-items:center;gap:10px;width:100%;max-width:380px;">
       <input id="player-name-input" type="text" maxlength="14" placeholder="Ditt namn"
         style="flex:1;background:rgba(0,0,0,0.4);border:2px solid rgba(255,255,255,0.3);border-radius:10px;padding:14px 14px;color:white;font-size:16px;font-family:Arial,sans-serif;outline:none;text-align:center;"
-        oninput="document.getElementById('start-btn').disabled = this.value.trim().length === 0; document.getElementById('start-btn').style.opacity = this.value.trim().length === 0 ? '0.4' : '1';"
-        onkeydown="if(event.key==='Enter' && this.value.trim()) startGame()" />
-      <button id="start-btn" class="start-btn" onclick="startGame()" disabled style="white-space:nowrap;flex-shrink:0;opacity:0.4;">STARTA</button>
+        oninput="const v=this.value.trim().length>0; ['start-btn','brawl-btn'].forEach(id=>{const b=document.getElementById(id);b.disabled=!v;b.style.opacity=v?'1':'0.4'});"
+        onkeydown="if(event.key==='Enter' && this.value.trim()) startGame('football')" />
+      <button id="start-btn" class="start-btn" onclick="startGame('football')" disabled style="white-space:nowrap;flex-shrink:0;opacity:0.4;">FOTBOLL</button>
+      <button id="brawl-btn" onclick="startGame('brawl')" disabled style="white-space:nowrap;flex-shrink:0;opacity:0.4;background:#a855f7;color:white;border:none;border-radius:10px;padding:14px 16px;font-family:'Arial Black',sans-serif;font-size:16px;letter-spacing:1px;cursor:pointer;box-shadow:0 4px 20px rgba(168,85,247,0.5);">BRAWL</button>
     </div>
     <p class="instructions">Bilden avslöjas steg för steg. Ju färre försök — desto fler poäng!</p>
   </div>
@@ -789,6 +790,31 @@ const PLAYERS = [
 ];
 
 // Pixel sizes: from very blocky to clear
+
+// ── Brawl Stars characters ────────────────────────────────────────────────────
+const BRAWL_PLAYERS = [
+  { name: "Shelly",    imageUrl: "brawl/shelly.png",    hints: ["Sheriffens dotter", "Standardvapen: hagelgevär", "Superskott sprider hagel"] },
+  { name: "Colt",      imageUrl: "brawl/colt.png",      hints: ["Skytt med revolver", "Lång räckvidd", "Superskott: 6 kulor rakt fram"] },
+  { name: "Bull",      imageUrl: "brawl/bull.png",      hints: ["Stark tankar", "Hagelgevär på nära håll", "Super: rusning rakt fram"] },
+  { name: "Brock",     imageUrl: "brawl/brock.png",     hints: ["Skjuter raketer", "Lång räckvidd", "Super: raketbombardement"] },
+  { name: "El Primo",  imageUrl: "brawl/el_primo.png",  hints: ["Luchador-wrestler", "Närstrid", "Super: hoppar och landar på fiender"] },
+  { name: "Barley",    imageUrl: "brawl/barley.png",    hints: ["Bartender", "Kastar flaskor", "Super: hagelbombardement av flaskor"] },
+  { name: "Poco",      imageUrl: "brawl/poco.png",      hints: ["Musiker", "Helande förmåga", "Super: helar vänner"] },
+  { name: "Jessie",    imageUrl: "brawl/jessie.png",    hints: ["Lägger ut en kanon", "Studsar skott", "Super: Scrappy kanonen"] },
+  { name: "Dynamike",  imageUrl: "brawl/dynamike.png",  hints: ["Gammalt sprängägg", "Kastar dynamit", "Super: stor dynamit-bomb"] },
+  { name: "Tick",      imageUrl: "brawl/tick.png",      hints: ["Litet robot-huvud", "Skickar minor", "Super: kopplar loss huvudet"] },
+  { name: "Rico",      imageUrl: "brawl/rico.png",      hints: ["Robotdansare", "Studsar kulor", "Skott studsar på väggar"] },
+  { name: "Penny",     imageUrl: "brawl/penny.png",     hints: ["Pirat", "Kastar kanonkot", "Super: lägger ut en kanon"] },
+  { name: "Carl",      imageUrl: "brawl/carl.png",      hints: ["Pickaxe-kastare", "Hackan återvänder", "Super: snurrar runt"] },
+  { name: "Bo",        imageUrl: "brawl/bo.png",        hints: ["Jägare", "Skjuter pilar", "Super: lägger minor i marken"] },
+  { name: "Spike",     imageUrl: "brawl/spike.png",     hints: ["Kaktus", "Skjuter taggar", "Super: skapar taggfält"] },
+  { name: "Leon",      imageUrl: "brawl/leon.png",      hints: ["Ninja", "Snabb och smidig", "Super: osynlighet"] },
+  { name: "Sandy",     imageUrl: "brawl/sandy.png",     hints: ["Sandstormgubbe", "Super: skapar sandstorm"] },
+  { name: "Amber",     imageUrl: "brawl/amber.png",     hints: ["Eldkastare", "Flicka med långa flätorna", "Super: eldhavsflod"] },
+  { name: "Max",       imageUrl: "brawl/max.png",       hints: ["Supercool löpare", "Supersnabb", "Super: ger vänner fart"] },
+  { name: "Surge",     imageUrl: "brawl/surge.png",     hints: ["Uppgraderar sig själv", "Shakes-gubbe", "Super: skjuter och uppgraderas"] },
+];
+
 // Pixel sizes per difficulty (1=lätt, 10=svår)
 // Lätt = fler steg, snabbt avslöjad. Svår = färre steg, stannar mer pixlad.
 function getPixelSizes(difficulty) {
@@ -813,6 +839,7 @@ let currentAttempt = 0;
 let gameOver = false;
 let imgLoaded = false;
 let recentPlayers = [];
+let gameMode = 'football'; // 'football' or 'brawl'
 let playerName = 'Anonym';
 let roundNumber = 0;
 const MAX_ROUNDS = 10;
@@ -881,9 +908,10 @@ async function renderHighscores() {
 
 function pickPlayer() {
   // Filter out the last min(3, total-1) played players
-  const maxRecent = Math.min(3, PLAYERS.length - 1);
-  const available = PLAYERS.filter(p => !recentPlayers.slice(-maxRecent).includes(p.name));
-  const pool = available.length > 0 ? available : PLAYERS;
+  const activeList = gameMode === 'brawl' ? BRAWL_PLAYERS : PLAYERS;
+  const maxRecent = Math.min(3, activeList.length - 1);
+  const available = activeList.filter(p => !recentPlayers.slice(-maxRecent).includes(p.name));
+  const pool = available.length > 0 ? available : activeList;
   const picked = pool[Math.floor(Math.random() * pool.length)];
   recentPlayers.push(picked.name);
   if (recentPlayers.length > maxRecent + 1) recentPlayers.shift();
@@ -927,7 +955,8 @@ function updateDiffLabel(v) {
   document.getElementById('diff-label').textContent = DIFF_LABELS[v] || v;
 }
 
-function startGame() {
+function startGame(mode = 'football') {
+  gameMode = mode;
   const nameInput = document.getElementById('player-name-input');
   const name = nameInput?.value.trim();
   if (!name) return;
