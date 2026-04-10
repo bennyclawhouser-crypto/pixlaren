@@ -903,16 +903,14 @@ function updateDiffLabel(v) {
 function startGame() {
   const nameInput = document.getElementById('player-name-input');
   if (nameInput?.value.trim()) playerName = nameInput.value.trim();
-  const ingame = document.getElementById('ingame-name');
-  if (ingame) ingame.value = playerName;
   roundNumber = 0;
   sessionScore = 0;
   const diff = parseInt(document.getElementById('difficulty-slider')?.value || '5');
   PIXEL_SIZES = getPixelSizes(diff);
   document.getElementById('start-screen').style.display = 'none';
   document.getElementById('game-screen').style.display = 'flex';
-  const ingame = document.getElementById('ingame-name');
-  if (ingame) ingame.value = playerName === 'Anonym' ? '' : playerName;
+  const ingameField = document.getElementById('ingame-name');
+  if (ingameField) ingameField.value = playerName === 'Anonym' ? '' : playerName;
   resetGame(false);
 }
 
