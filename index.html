@@ -1085,6 +1085,8 @@ function startGame(mode = 'football') {
   document.getElementById('game-screen').style.display = 'flex';
   const ingameField = document.getElementById('ingame-name');
   if (ingameField) ingameField.value = playerName === 'Anonym' ? '' : playerName;
+  const hintBtn = document.getElementById('hint-btn');
+  if (hintBtn) hintBtn.style.display = mode === 'love' ? 'none' : '';
   resetGame(false);
 }
 
