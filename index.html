@@ -544,7 +544,11 @@
   <div class="guess-section">
     <div class="guess-label">Din gissning</div>
     <input class="guess-input" id="guess-input" type="text" placeholder="Skriv spelarens namn..." autocomplete="off" autocorrect="off" spellcheck="false" />
-    <button class="guess-btn" onclick="checkGuess()">GISSA</button>
+    <div style="display:flex;gap:8px;">
+      <button class="guess-btn" onclick="checkGuess()" style="flex:1;">GISSA</button>
+      <button id="hint-btn" onclick="showHint()" style="background:rgba(255,255,255,0.12);border:1.5px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.85);border-radius:10px;padding:14px 14px;font-family:'Arial Black',sans-serif;font-size:13px;letter-spacing:1px;cursor:pointer;white-space:nowrap;">LEDTRÅD</button>
+    </div>
+    <div id="hint-display" style="display:none;background:rgba(0,0,0,0.45);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:10px 14px;font-family:Arial,sans-serif;font-size:13px;color:rgba(255,255,255,0.85);text-align:center;line-height:1.4;"></div>
   </div>
 </div>
 
@@ -831,6 +835,7 @@ function getPixelSizes(difficulty) {
 
 let PIXEL_SIZES = getPixelSizes(5);
 let currentDifficulty = 5;
+let hintUsed = false;
 const MAX_HINTS = 3;
 
 let currentPlayer = null;
@@ -991,7 +996,11 @@ function resetGame(showStart = true) {
   btn.disabled = false;
   btn.dataset.mode = 'attempt';
   document.getElementById('guess-input').value = '';
-  document.getElementById('hint-text').style.display = 'none';
+  const hd = document.getElementById('hint-display');
+  if (hd) { hd.style.display = 'none'; hd.textContent = ''; }
+  const hb = document.getElementById('hint-btn');
+  if (hb) { hb.disabled = false; hb.style.opacity = '1'; hb.textContent = 'LEDTRÅD'; }
+  hintUsed = false;
 
   currentPlayer = pickPlayer();
 
@@ -1166,6 +1175,17 @@ function showResult(won, score) {
   if (playAgainBtn) playAgainBtn.textContent = nextLabel;
 
   overlay.classList.add('show');
+}
+
+function showHint() {
+  if (hintUsed || !currentPlayer) return;
+  hintUsed = true;
+  const hints = currentPlayer.hints || [];
+  const hint = hints[Math.floor(Math.random() * hints.length)] || 'Inga ledtrådar tillgängliga';
+  const hd = document.getElementById('hint-display');
+  const hb = document.getElementById('hint-btn');
+  if (hd) { hd.style.display = 'block'; hd.textContent = '💡 ' + hint; }
+  if (hb) { hb.disabled = true; hb.style.opacity = '0.4'; hb.textContent = 'ANVÄND'; }
 }
 
 // Init highscores on load
