@@ -222,36 +222,6 @@
       z-index: 1;
     }
 
-
-    /* Game screen fullscreen */
-    #game-screen {
-      position: fixed;
-      inset: 0;
-      z-index: 20;
-      background: #1a4a0e;
-      overflow-y: auto;
-      padding: 12px 12px 80px;
-    }
-
-    /* Image takes full width in game */
-    .game-row {
-      width: 100%;
-      max-width: 100%;
-      flex-direction: column;
-    }
-    .game-row .img-wrapper {
-      width: 100%;
-      max-width: 100%;
-    }
-    .img-container {
-      max-width: 100% !important;
-      width: 100% !important;
-    }
-    .highscore-panel {
-      width: 100%;
-      margin-top: 12px;
-    }
-
     /* Game layout row: image + highscore side by side */
     .game-row {
       width: 100%;
@@ -473,14 +443,6 @@
     }
     .wrong-flash { animation: wrongFlash 0.4s ease; }
 
-
-    /* Dim pitch during gameplay */
-    #game-screen ~ .pitch-lines,
-    #game-screen ~ .stickmen-layer {
-      opacity: 0.15;
-      transition: opacity 0.3s;
-    }
-
     /* ── Stickmen playing football ── */
     .stickmen-layer {
       position: fixed;
@@ -570,7 +532,7 @@
 <!-- START SCREEN -->
 
 <!-- Stickmen playing football -->
-<div class="stickmen-layer" aria-hidden="true" style="transform:rotate(90deg);transform-origin:center center;">
+<div class="stickmen-layer" aria-hidden="true">
   <div style="position:absolute;width:14px;height:14px;border-radius:50%;background:white;border:2px solid rgba(0,0,0,0.25);animation:passBall 6s linear infinite;"></div>
   <div style="position:absolute;left:23%;top:18%;transform:scaleX(1);">
     <svg width="26" height="46" viewBox="0 0 26 46" fill="none" opacity="0.35">
@@ -734,7 +696,7 @@
   </div>
 </div>
 <!-- Football pitch lines -->
-<svg class="pitch-lines" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" style="transform:rotate(90deg);" xmlns="http://www.w3.org/2000/svg">
+<svg class="pitch-lines" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
   <rect x="3" y="3" width="94" height="54" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="0.9"/>
   <line x1="50" y1="3" x2="50" y2="57" stroke="rgba(255,255,255,0.8)" stroke-width="0.9"/>
   <circle cx="50" cy="30" r="9" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="0.9"/>
